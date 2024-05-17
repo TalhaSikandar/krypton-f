@@ -35,7 +35,7 @@ from companies.models import Company
 
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
-    company_code = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True, help_text="Your Company")
+    company_code = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True, help_text="Your Company", related_name="users")
     USERNAME_FIELD = 'email'
 
     ADMIN = 1

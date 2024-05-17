@@ -7,7 +7,7 @@ from raw_materials.models import Rawmaterial
 class Product(models.Model):
 
     product_name = models.CharField(max_length=200, blank=False, null=False, help_text="Product Name")
-    raw_materials = models.ManyToManyField(Rawmaterial, blank=True)
+    raw_materials = models.ManyToManyField(Rawmaterial, blank=True, related_name="products")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 

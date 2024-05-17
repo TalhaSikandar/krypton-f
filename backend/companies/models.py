@@ -5,8 +5,8 @@ from django.utils import timezone
 # Create your models here.
 class Company(models.Model):
     company_name = models.CharField(max_length=200,unique=True, blank=False, null=False, help_text="Company Name")
-    contact = models.ForeignKey(Contact, on_delete=models.RESTRICT, blank=True, null=True)
-    address = models.ForeignKey(Address, on_delete=models.RESTRICT, blank=True, null=True)
+    contact = models.ForeignKey(Contact, on_delete=models.RESTRICT, blank=True, null=True, related_name="companies")
+    address = models.ForeignKey(Address, on_delete=models.RESTRICT, blank=True, null=True, related_name="companies")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     # company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True)

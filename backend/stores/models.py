@@ -9,10 +9,10 @@ from django.conf import settings
 class Store(models.Model):
 
     store_name = models.CharField(max_length=200, blank=False, null=False, help_text="Store Name")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True)
-    manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True)
-    contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True, related_name="stores")
+    manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True, related_name="stores")
+    contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True, related_name="stores")
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="stores")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
