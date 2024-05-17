@@ -36,6 +36,7 @@ from companies.models import Company
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
     company_code = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True, help_text="Your Company", related_name="users")
+    profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True) #needs pillow to work
     USERNAME_FIELD = 'email'
 
     ADMIN = 1
@@ -45,3 +46,51 @@ class CustomUser(AbstractUser):
             MANAGER = "MANAGER", "Manager"
     role = models.CharField(default=Types.MANAGER, max_length=10, choices=Types.choices, blank=False, null=False, help_text="Your role in the Company")
     REQUIRED_FIELDS = ['user_name', 'company_code', 'role']
+
+    def get_profile_picture(self):
+        if self.profile_picture:
+            self.profile_picture = self.make_profile_picture(self.profile_picture)
+            return 'http://127.0.0.1:8000' + self.profile_picture.url
+        return ''
+
+    def make_profile_picture(self, image, size=(150, 150)):
+        """
+        Resizes and converts the profile picture to RGB format for consistency.
+
+        Args:
+            image: The profile picture as a Django File object or a file path string.
+            size: The desired size of the resized image as a tuple (width, height).
+
+        Returns:
+            A BytesIO object containing the resized and converted image data.
+        """
+        from PIL import Image
+        from io import BytesIO
+        try:
+            # Handle Django File objects and file paths
+            if hasattr(image, 'read'):  # Check if it's a Django File object
+                image_data = image.read()
+            else:
+                with open(image, 'rb') as f:
+                    image_data = f.read()
+
+            # Open the image using Pillow
+            pp = Image.open(BytesIO(image_data))
+
+            # Convert to RGB mode (optional, but recommended for consistency)
+            pp = pp.convert('RGB')
+
+            # Resize the image
+            pp.thumbnail(size, Image.ANTIALIAS)  # Use ANTIALIAS for smoother resizing
+
+            # Create a BytesIO object to store the resized image data
+            output = BytesIO()
+            pp.save(output, format='JPEG')  # Save as JPEG by default
+            output.seek(0)
+
+            return output
+
+        except Exception as e:
+            print(f"Error processing profile picture: {e}")
+            return None  # Or return a default image path/data if desired
+        

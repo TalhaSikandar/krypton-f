@@ -8,7 +8,6 @@ from django.conf import settings
 
 class Store(models.Model):
 
-    store_name = models.CharField(max_length=200, blank=False, null=False, help_text="Store Name")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True, related_name="stores")
     manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True, related_name="stores")
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True, related_name="stores")
@@ -20,13 +19,13 @@ class Store(models.Model):
     # Add prefetch related in the views for relationsurls
 
     class Meta:
-        ordering = ['store_name']
+        ordering = ['id']
         verbose_name_plural = 'Stores'
 
 
         # related to admin page
     def __str__(self):
-        return self.store_name
+        return self.id
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])

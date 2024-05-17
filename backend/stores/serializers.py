@@ -12,4 +12,5 @@ class StoreSerializer(serializers.ModelSerializer):
     # address = AddressSerializer(many=True)
     class Meta:
         model = Store
-        fields = ['id', 'store_name', 'company','manager','contact', 'address', 'updated_at', ]
+        # fields = ['id', 'store_name', 'company','manager','contact', 'address', 'updated_at', ]
+        fields = ['id', 'company','manager','contact', 'address', 'updated_at', ]
