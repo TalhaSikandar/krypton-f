@@ -1,4 +1,5 @@
 from enum import unique
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from contacts.models import Contact, Address
 from django.utils import timezone
@@ -10,7 +11,9 @@ class Company(models.Model):
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     # company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True)
-    company_code = models.CharField(max_length=10, default="0123456789", unique=True, null=False, blank=False, help_text="Enter a 10 digit code that will be used as company code")
+    company_code = models.PositiveBigIntegerField(validators=[
+                                                MinValueValidator(10), MaxValueValidator(10)
+                                                  ], blank=False, null=False, unique=True)
 
     class Meta:
         ordering = ['company_name']
