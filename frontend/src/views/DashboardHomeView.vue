@@ -4,7 +4,7 @@
    <div class="column is-narrow is-half-tablet is-one-quarter-desktop" style="border: 1px solid red">
     <aside class="menu">
      <ul class="menu-list">
-                  <li><router-link :to="{name: 'home'}">Home</router-link></li>
+                  <li><router-link :to="{name: 'dashboardhome'}">Home</router-link></li>
                   <li><router-link :to="{name: 'stores'}">Stores</router-link></li>
                   <li><router-link :to="{name: 'warehouses'}">Warehouses</router-link></li>
                   <li><router-link :to="{name: 'suppliers'}">Suppliers</router-link></li>

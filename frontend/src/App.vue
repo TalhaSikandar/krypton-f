@@ -3,7 +3,7 @@
     <div class="navbar-containter">
       <nav class="navbar is-dark">
         <div class="navbar-brand">
-          <router-link to="/" class="navbar-item"><strong>Krypton</strong></router-link>
+          <router-link :to="{name: 'home'}" class="navbar-item"><strong>Krypton</strong></router-link>
           <a class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="nav-bar-menu" @click="showMobileMenu = !showMobileMenu">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardHomeView from '../views/DashboardHomeView.vue'
 import DashboardSectionView from '../views/DashboardSectionView.vue'
-import StoreView from '../views/StoreView.vue'
+import StoreView from '../views/StoreViews/StoreView.vue'
 import WarehouseView from '../views/WarehouseView.vue'
 import EmployeeView from '../views/EmployeeView.vue'
 import SupplierView from '../views/SupplierView.vue'
@@ -12,36 +12,36 @@ import HomeView from '../views/HomeView.vue'
 const routes = [
   {
     path: '/dashboard',
-    name: 'dashboardhome',
+    name: 'dashboard',
     component: DashboardHomeView,
     children: [
         {
-          path: '/',
-          name: 'dashboadsection',
+          path: '/dashboard/home/',
+          name: 'dashboardhome',
           component: DashboardSectionView
         },
         {
-          path: '/stores',
+          path: '/dashboard/stores',
           name: 'stores',
           component: StoreView
         },
         {
-          path: '/warehouses',
+          path: '/dashboard/warehouses',
           name: 'warehouses',
           component: WarehouseView
         },
         {
-          path: '/suppliers',
+          path: '/dashboard/suppliers',
           name: 'suppliers',
           component: SupplierView
         },
         {
-          path: '/employees',
+          path: '/dashboard/employees',
           name: 'employees',
           component: EmployeeView
         },
         {
-          path: '/settings',
+          path: '/dashboard/settings',
           name: 'settings',
           component: SettingsView
         },

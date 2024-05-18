@@ -45,7 +45,9 @@ class CustomUser(AbstractUser):
             ADMIN = "ADMIN", "Admin"
             MANAGER = "MANAGER", "Manager"
     role = models.CharField(default=Types.MANAGER, max_length=10, choices=Types.choices, blank=False, null=False, help_text="Your role in the Company")
-    REQUIRED_FIELDS = ['user_name', 'company_code', 'role']
+    # REQUIRED_FIELDS = ['user_name', 'company_code', 'role']
+    REQUIRED_FIELDS = ['username', 'role']
+    # REQUIRED_FIELDS = ['role']
 
     def get_profile_picture(self):
         if self.profile_picture:
