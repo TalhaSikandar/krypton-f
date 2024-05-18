@@ -43,7 +43,7 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'company_code', 'role')  
+        fields = ('username', 'email', 'company_code', 'role')  
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

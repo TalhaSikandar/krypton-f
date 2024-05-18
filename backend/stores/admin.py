@@ -1,7 +1,16 @@
 from django.contrib import admin
 from .models import Store
-# from permissions.models import perm_stores
+from permissions.models import perm_stores
 # Register your models here.
 
-admin.site.register(Store)
-# perm_stores()
+perm_stores()
+
+class StoreAdmin(admin.ModelAdmin):
+    list_display = (
+        'company', 'manager', 'contact', 'address', 'id', 
+        )
+
+
+admin.site.register(Store, StoreAdmin)
+
+# Register your models here.

@@ -25,7 +25,7 @@ class Store(models.Model):
 
         # related to admin page
     def __str__(self):
-        return self.id
+        return str(self.id)
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])

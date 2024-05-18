@@ -136,7 +136,8 @@ class StoreList(generics.ListCreateAPIView):
                 # KManagers can only access their own store
                 return Store.objects.filter(manager=user)
         # For any other user, return an empty queryset
-        return Store.objects.none()
+        queryset = Store.objects.all()
+        return queryset
 class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer

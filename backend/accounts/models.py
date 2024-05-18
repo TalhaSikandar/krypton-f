@@ -95,4 +95,7 @@ class CustomUser(AbstractUser):
         except Exception as e:
             print(f"Error processing profile picture: {e}")
             return None  # Or return a default image path/data if desired
-        
+
+        def get_absolute_url(self):
+            """Returns the URL to access a particular instance of MyModelName."""
+            return reverse('model-detail-view', args=[str(self.id)])
