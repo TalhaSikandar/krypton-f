@@ -13,7 +13,7 @@
 
         <div class="navbar-menu" id="navbar-menu" v-bind:class="{'is-active': showMobileMenu}">
           <div class="navbar-end">
-            <router-link to="/" class="navbar-item">Home</router-link>
+            <router-link to="/dashboard" class="navbar-item">Dashboard</router-link>
 
             <div class="navbar-item">
               <div class="buttons">
@@ -25,11 +25,9 @@
       </nav>
     </div>
 
-    <div class="body-container">
-      <secton class="section" style="border: 0.5 solid red">
-        <router-view/>
-      </secton>
-    </div>
+  <div class="section">
+    <router-view/>
+  </div>
     <div class="footer-container">
       <footer class="footer">
         <p class="has-text-centered">Krypton Securities since 2024</p>

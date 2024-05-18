@@ -1,5 +1,34 @@
 <template>
-  <div>Home</div>
+  <div class="stores">
+    <h1>Warehouses</h1>
+    <div class="columns is-multiline">
+      <div v-for="store in stores" :key="store.id" class="column is-one-third">
+        <div class="card">
+          <div class="card-header">
+            <p class="card-header-title">
+              {{ store.company }} - {{ store.id }}
+            </p>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <p>
+                <strong>Manager:</strong> {{ store.manager }}
+              </p>
+              <p>
+                <strong>Contact:</strong> {{ store.contact }}
+              </p>
+              <p>
+                <strong>Address:</strong> {{ store.address }}
+              </p>
+              <p>
+                <strong>Updated at:</strong> {{ store.updated_at | formatDate }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
