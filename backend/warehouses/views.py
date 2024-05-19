@@ -24,7 +24,7 @@ class WarehouseList(generics.ListCreateAPIView):
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
                 # KAdmins can access stores for their company
-                return Warehouse.objects.filter(company=user.company_code)
+                return Warehouse.objects.filter(company=user.company)
         # For any other user, return an empty queryset
         return Warehouse.objects.none()
 class WarehouseDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -37,13 +37,13 @@ class WarehouseDetail(generics.RetrieveUpdateDestroyAPIView):
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
                 # KAdmins can access stores for their company
-                queryset = Warehouse.objects.filter(company=user.company_code)
+                queryset = Warehouse.objects.filter(company=user.company)
             else:
                 # For any other user, return an empty queryset
                 queryset = Warehouse.objects.none()
 
             # Get the specific store object based on URL parameter 'pk'
-            obj = get_object_or_404(queryset, pk=self.kwargs['pk'])
+            obj = get_object_or_404(queryset, slug=self.kwargs['warehouse_slug'])
             return obj
         # If user is not authenticated, return 404 Not Found
-        return get_object_or_404(Warehouse.objects.none(), pk=self.kwargs['pk'])
+        return get_object_or_404(Warehouse.objects.none(), slug=self.kwargs['warehouse_slug'])

@@ -43,9 +43,9 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'company_code', 'role')  
+        fields = ('username', 'email', 'company', 'role')  
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'company_code', 'role')  # Customize fields as needed
+        fields = ('email', 'company', 'role')  # Customize fields as needed

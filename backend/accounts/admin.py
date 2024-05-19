@@ -8,7 +8,7 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
-        'username', 'email', 'company_code', 'role'
+        'username', 'email', 'company', 'role'
         )
 
     fieldsets = (
@@ -28,13 +28,13 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('last_login', 'date_joined')
         }),
         ('Additional info', {
-            'fields': ('company_code', )
+            'fields': ('company', )
         })
     )
 
     add_fieldsets = (
         (None, {
-            'fields': ('username', 'company_code','password1', 'password2', 'role', 'first_name', 'last_name')
+            'fields': ('username', 'company','password1', 'password2', 'role', 'first_name', 'last_name')
         }),
         ('Personal info', {
             'fields': ('first_name', 'last_name', 'email')
@@ -49,7 +49,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('last_login', 'date_joined')
         }),
         ('Additional info', {
-            'fields': ('company_code', )
+            'fields': ('company', )
         })
     )
 

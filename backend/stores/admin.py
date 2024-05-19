@@ -7,8 +7,9 @@ perm_stores()
 
 class StoreAdmin(admin.ModelAdmin):
     list_display = (
-        'company', 'manager', 'contact', 'address', 'id', 
+        'company', 'manager', 'contact', 'address', 'id',
         )
+    prepopulated_fields = {"slug": ("company", "manager")}
 
 
 admin.site.register(Store, StoreAdmin)

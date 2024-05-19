@@ -1,0 +1,200 @@
+<template>
+    <div class="stores">
+      <h1>Stores</h1>
+      <div class="columns is-multiline">
+        <div v-for="store in stores" :key="store.id" class="column is-half">
+          <div class="card">
+            <div class="card-header">
+              <p class="card-header-title">
+                {{ store.company }} - {{ store.id }}
+                <button v-if="!isEditing(store)" @click="editStore(store)">Edit</button>
+                <button v-if="isEditing(store)" @click="saveStore(store)">Save</button>
+                <button v-if="isEditing(store)" @click="cancelEdit(store)">Cancel</button>
+              </p>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                <p v-if="isEditing(store)">
+                  <strong>Manager:</strong>
+                  <input v-model="store.manager" type="text" />
+                </p>
+                <p v-if="!isEditing(store)">
+                  <strong>Manager:</strong> {{ store.manager }}
+                </p>
+                <p v-if="store.contact">
+                  <strong>Contact:</strong> {{ store.contact }}
+                </p>
+                <p v-if="store.address">
+                  <strong>Address:</strong> {{ store.address }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <button class="button is-primary" @click="openAddStoreModal">Add Store</button>
+      <add-store-modal v-if="showAddStoreModal" @close="closeAddStoreModal" @storeAdded="addStore"></add-store-modal>
+    </div>
+  </template>
+  
+  <script>
+  
+  import AddStoreModal from './AddStoreModal.vue'; // Import your AddStoreModal component
+  import axios from 'axios';
+  
+  export default {
+    name: 'stores',
+    data() {
+      return {
+        stores: [],
+        showAddStoreModal: false,
+        editingStore: null,
+      };
+    },
+    mounted() {
+      this.getStores();
+    },
+    methods: {
+      getStores() {
+        axios
+          .get('dashboard/stores/')
+          .then(response => {
+            this.stores = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching stores:', error);
+          });
+      },
+      isEditing(store) {
+        return this.editingStore === store.id;
+      },
+      editStore(store) {
+        this.editingStore = store.id;
+      },
+      cancelEdit(store) {
+        this.editingStore = null;
+      },
+      saveStore(store) {
+        // Implement logic to save store edits using axios.put
+        axios
+          .put(`dashboard/stores/${store.id}/`, store)
+          .then(response => {
+            // Update the store data in your local array
+            const storeIndex = this.stores.findIndex(s => s.id === store.id);
+            if (storeIndex !== -1) {
+              this.stores.splice(storeIndex, 1, response.data);
+            }
+            this.editingStore = null; // End editing mode
+          })
+          .catch(error => {
+            console.error('Error saving store:', error);
+            // Handle errors appropriately
+          });
+      },
+      openAddStoreModal() {
+        this.showAddStoreModal = true;
+      },
+      closeAddStoreModal() {
+        this.showAddStoreModal = false;
+      },
+      addStore(newStoreData) {
+        // Implement logic to add a new store using axios.post
+        axios
+          .post('dashboard/stores/', newStoreData)
+          .then(response => {
+            this.stores.push(response.data); // Add new store to local array
+            this.showAddStoreModal = false; // Close modal
+          })
+          .catch(error => {
+            console.error('Error adding store:', error);
+            // Handle errors appropriately
+          });
+      },
+    },
+    components: {
+      AddStoreModal, //
+  }
+  }
+  </script>
+  
+  //<template>
+  //  <div class="stores">
+  //    <h1>Stores</h1>
+  //    <div class="columns is-multiline">
+  //      <div v-for="store in stores" :key="store.id" class="column is-half">
+  //        <div class="card">
+  //          <div class="card-header">
+  //            <p class="card-header-title">
+  //              {{ store.company }} - {{ store.id }}
+  //            </p>
+  //          </div>
+  //          <div class="card-content">
+  //            <div class="content">
+  //              <p v-if="store.manager">
+  //                <strong>Manager:</strong> {{ store.manager }}
+  //              </p>
+  //              <p v-if="store.contact">
+  //                <strong>Contact:</strong> {{ store.contact }}
+  //              </p>
+  //              <p v-if="store.address">
+  //                <strong>Address:</strong> {{ store.address }}
+  //              </p>
+  //            </div>
+  //          </div>
+  //        </div>
+  //      </div>
+  //    </div>
+  //  </div>
+  //</template>
+  //
+  //<script>
+  //import axios from 'axios';
+  //export default {
+  //  name: 'stores',
+  //  data() {
+  //    return {
+  //      stores: [],
+  //    };
+  //  },
+  //  mounted() {
+  //    this.getStores();
+  //  },
+  //  methods: {
+  //    getStores() {
+  //      axios
+  //        .get('dashboard/stores/')
+  //        .then(response => {
+  //          this.stores = response.data;
+  //          console.log(this.stores)
+  //        })
+  //        .catch(error => {
+  //          console.error('Error fetching stores:', error);
+  //        });
+  //    },
+  //    formatDate(dateString) {
+  //      // Implement date formatting logic based on your requirements (e.g., using moment.js or a similar library)
+  //      return new Date(dateString).toLocaleDateString(); // Example using built-in Date object
+  //    },
+  //  },
+  //};
+  //
+  <style scoped>
+  .stores {
+  /* Add your custom styles for the overall stores section */
+  }
+  
+  .card {
+  /* Style the card elements */
+  }
+  
+  .card-header-title {
+  /* Style the card header title */
+  }
+  
+  .content {
+  /* Style the content area within the card */
+  }
+  </style>
+  
+  

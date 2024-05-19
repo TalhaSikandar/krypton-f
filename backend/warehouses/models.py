@@ -10,11 +10,13 @@ class Warehouse(models.Model):
 
     warehouse_name = models.CharField(max_length=200, blank=False, null=False, help_text="WareHouse Name")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True)
-    products = models.ManyToManyField(Product, blank=True, through='WarehouseProduct') # to make a new column amount used through ...
+    products = models.ManyToManyField(Product, blank=True, through='WarehouseProduct', related_name="warehouses") # to make a new column amount used through ...
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
+
+    slug = models.SlugField(default='', null=False)
 
 
 

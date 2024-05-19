@@ -13,7 +13,7 @@ class Company(models.Model):
     # company_code = models.PositiveBigIntegerField(validators=[
     #                                             MinValueValidator(10), MaxValueValidator(10)
     #                                               ], blank=False, null=False, unique=True)
-    company_code = models.CharField(max_length=10, blank=False, null=False, unique=False)
+    # company_code = models.CharField(max_length=10, blank=False, null=False, unique=False)
 
     class Meta:
         ordering = ['company_name']

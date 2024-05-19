@@ -35,7 +35,7 @@ from companies.models import Company
 
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
-    company_code = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True, help_text="Your Company", related_name="users")
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True, help_text="Your Company", related_name="users")
     profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True) #needs pillow to work
     USERNAME_FIELD = 'email'
 

@@ -12,6 +12,7 @@ from .models import Store
 from contacts.models import Contact, Address
 from companies.models import Company
 from .serializers import StoreSerializer
+from accounts.models import CustomUser
 # 1st
 #
 # # Create your views here.
@@ -131,33 +132,39 @@ class StoreList(generics.ListCreateAPIView):
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
                 # KAdmins can access stores for their company
-                return Store.objects.filter(company=user.company_code)
+                return Store.objects.filter(company=user.company)
             elif user.groups.filter(name='KManager').exists():
                 # KManagers can only access their own store
                 return Store.objects.filter(manager=user)
         # For any other user, return an empty queryset
-        queryset = Store.objects.all()
-        return queryset
-class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        queryset = Store.objects.all() 
+        return queryset 
+    def create(self, request, *args, **kwargs):
+        user = CustomUser.objects.filter(role=CustomUser.Types.ADMIN)[0]
+        request.user = user
+        print(request.user)
+        # user = request.user
+        if not user.groups.filter(name='KAdmin').exists():
+            return Response({'error': 'You are not authorized to create stores.'}, status=status.HTTP_403_FORBIDDEN)
 
-    def get_object(self):
-        user = self.request.user
-        if user.is_authenticated:
-            if user.groups.filter(name='KAdmin').exists():
-                # KAdmins can access stores for their company
-                queryset = Store.objects.filter(company=user.company_code)
-            elif user.groups.filter(name='KManager').exists():
-                # KManagers can only access their own store
-                queryset = Store.objects.filter(manager=user)
-            else:
-                # For any other user, return an empty queryset
-                queryset = Store.objects.none()
-
-            # Get the specific store object based on URL parameter 'pk'
-            obj = get_object_or_404(queryset, pk=self.kwargs['pk'])
-            return obj
-        # If user is not authenticated, return 404 Not Found
-        return get_object_or_404(Store.objects.none(), pk=self.kwargs['pk'])
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class StoreDetail(generics.RetrieveUpdateDestroyAPIView): 
+    queryset = Store.objects.all() 
+    serializer_class = StoreSerializer 
+    # permission_classes = [permissions.IsAuthenticated] 
+    def get_object(self): 
+        user = self.request.user 
+        if user.is_authenticated: 
+            if user.groups.filter(name='KAdmin').exists(): 
+            # KAdmins can access stores for their company 
+                queryset = Store.objects.filter(company=user.company) 
+            elif user.groups.filter(name='KManager').exists(): 
+                 #KManagers can only access their own store 
+                queryset = Store.objects.filter(manager=user) 
+            else: 
+                queryset = Store.objects.none() 
+        # If user is not authenticated, 
+        return get_object_or_404(queryset, slug=self.kwargs['store_slug'])

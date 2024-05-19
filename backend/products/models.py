@@ -7,7 +7,7 @@ from raw_materials.models import Rawmaterial
 class Product(models.Model):
 
     product_name = models.CharField(max_length=200, blank=False, null=False, help_text="Product Name")
-    raw_materials = models.ManyToManyField(Rawmaterial, blank=True, related_name="products")
+    raw_materials = models.ManyToManyField(Rawmaterial, blank=True, related_name="products", through="ProductRawMaterial")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -24,3 +24,7 @@ class Product(models.Model):
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])
+class ProductRawMaterial(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    raw_material = models.ForeignKey(Rawmaterial, on_delete=models.CASCADE)
+    quantity = models.IntegerField(null=False, default=0, blank=True)
