@@ -2,14 +2,14 @@
  <div class="home" style="border: 1px solid red">
 <!--   <div class="columns" style="border: 1px solid red"> -->
    <div class="column is-narrow is-half-tablet is-one-quarter-desktop" style="border: 1px solid red">
-    <aside class="menu">
-     <ul class="menu-list">
-                  <li><router-link :to="{name: 'dashboardhome'}">Home</router-link></li>
-                  <li><router-link :to="{name: 'stores'}">Stores</router-link></li>
-                  <li><router-link :to="{name: 'warehouses'}">Warehouses</router-link></li>
-                  <li><router-link :to="{name: 'suppliers'}">Suppliers</router-link></li>
-                  <li><router-link :to="{name: 'employees'}">Employees</router-link></li>
-                  <li><router-link :to="{name: 'settings'}">Settings</router-link></li>
+    <aside class="menu is-dark" style="border: 1px solid red">
+     <ul class="menu-list has-text-centered" style="border: 1px solid red">
+                  <li><router-link class="has-text-centered" :to="{name: 'dashboardhome'}">Home</router-link></li>
+                  <li><router-link class="has-text-centered" :to="{name: 'stores'}">Stores</router-link></li>
+                  <li><router-link class="has-text-centered" :to="{name: 'warehouses'}">Warehouses</router-link></li>
+                  <li><router-link class="has-text-centered" :to="{name: 'suppliers'}">Suppliers</router-link></li>
+                  <li><router-link class="has-text-centered" :to="{name: 'employees'}">Employees</router-link></li>
+                  <li><router-link class="has-text-centered" :to="{name: 'settings'}">Settings</router-link></li>
       </ul>
     </aside>
    </div>
@@ -43,7 +43,7 @@ export default {
 
 /* Optional styling for menu and content areas */
 .menu {
-  background-color: #f5f5f5;
+  background-color: #2e333d !important;
   padding: 1rem;
 }
 

@@ -3,11 +3,14 @@ from rest_framework import serializers
 # from contacts.serializers import ContactSerializer, AddressSerializer
 # from companies.serializers import CompanySerializer
 from .models import Warehouse
+from contacts.serializers import AddressSerializer, ContactSerializer
 
 
 class WarehouseSerializer(serializers.ModelSerializer):
-    contact = serializers.StringRelatedField(read_only=True)
-    address = serializers.StringRelatedField(read_only=True)
+    address = AddressSerializer()
+    contact = ContactSerializer()
+    # contact = serializers.StringRelatedField()
+    # address = serializers.StringRelatedField()
     company = serializers.StringRelatedField(read_only=True)
     products = serializers.StringRelatedField(read_only=True)
     # contact = ContactSerializer(many=True)

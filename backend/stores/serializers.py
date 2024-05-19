@@ -1,11 +1,18 @@
 from rest_framework import serializers
+from products.serializers import ProductSerializer
 from contacts.serializers import ContactSerializer, AddressSerializer
 from companies.serializers import CompanySerializer
-from .models import Store
+from .models import Store, StoreProduct
 from accounts.serializers import CustomUserSerializer
 from accounts.models import CustomUser
 from companies.models import Company
 
+class StoreProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    
+    class Meta:
+        model = StoreProduct
+        fields = ['product', 'quantity']
 
 class StoreSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()
@@ -13,10 +20,11 @@ class StoreSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
     manager = CustomUserSerializer(read_only=True)
     manager_password = serializers.CharField(write_only=True, required=True)  # New password field
+    products = StoreProductSerializer(source='storeproduct_set', many=True)
 
     class Meta:
         model = Store
-        fields = ['id', 'company', 'manager', 'contact', 'address', 'updated_at', 'manager_password']
+        fields = ['id', 'company', 'manager', 'contact', 'products', 'address', 'updated_at', 'manager_password']
         read_only_fields = ['company', 'manager']
 
     def create(self, validated_data):

@@ -142,11 +142,11 @@ class StoreList(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         user = CustomUser.objects.filter(role=CustomUser.Types.ADMIN)[0]
         request.user = user
+        print(request.data)
         print(request.user)
         # user = request.user
         if not user.groups.filter(name='KAdmin').exists():
             return Response({'error': 'You are not authorized to create stores.'}, status=status.HTTP_403_FORBIDDEN)
-
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()

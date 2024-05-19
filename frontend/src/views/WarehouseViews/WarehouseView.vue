@@ -1,6 +1,6 @@
 <template>
   <div class="stores">
-    <h1>Warehouses</h1>
+    <h1>Suppliers</h1>
     <div class="columns is-multiline">
       <div v-for="store in stores" :key="store.id" class="column is-one-third">
         <div class="card">

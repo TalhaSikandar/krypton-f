@@ -5,7 +5,7 @@ from contacts.models import Contact, Address
 from django.utils import timezone
 # Create your models here.
 class Company(models.Model):
-    company_name = models.CharField(max_length=200,unique=True, blank=False, null=False, help_text="Company Name")
+    company_name = models.CharField(max_length=200,unique=False, blank=False, null=False, help_text="Company Name")
     contact = models.ForeignKey(Contact, on_delete=models.RESTRICT, blank=True, null=True, related_name="companies")
     address = models.ForeignKey(Address, on_delete=models.RESTRICT, blank=True, null=True, related_name="companies")
     created_at = models.DateTimeField(default=timezone.now, editable=False)

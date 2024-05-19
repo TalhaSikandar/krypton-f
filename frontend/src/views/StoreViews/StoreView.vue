@@ -15,6 +15,14 @@
               <p><strong>Manager:</strong> {{ store.manager.username }}</p>
               <p v-if="store.contact"><strong>Contact:</strong> {{ store.contact }}</p>
               <p v-if="store.address"><strong>Address:</strong> {{ store.address }}</p>
+              <div v-if="store.products.length">
+                <p><strong>Products:</strong></p>
+                <ul>
+                  <li v-for="product in store.products" :key="product.product.id">
+                    {{ product.product.product_name }} - Quantity: {{ product.quantity }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -40,7 +48,6 @@
     ></generic-form-component>
   </div>
 </template>
-
 <script>
 import GenericFormComponent from './GenericFormComponent.vue';
 import axios from 'axios';
