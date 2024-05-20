@@ -8,7 +8,7 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
-        'username', 'email', 'company', 'role'
+        'id', 'username', 'email', 'company', 'role'
         )
 
     fieldsets = (

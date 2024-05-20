@@ -14,6 +14,7 @@ export default {
   },
   mounted() {
     this.getStores();
+    document.title = 'Home | Krypton'
   },
   methods: {
     getStores() {

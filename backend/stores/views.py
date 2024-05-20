@@ -141,7 +141,7 @@ class StoreList(generics.ListCreateAPIView):
         queryset = Store.objects.all() 
         return queryset 
     def create(self, request, *args, **kwargs):
-        user = CustomUser.objects.filter(role=CustomUser.Types.ADMIN)[0]
+        user = CustomUser.objects.get(username="laptop")
         request.user = user
         print(request.data)
         print(request.user)
@@ -149,7 +149,11 @@ class StoreList(generics.ListCreateAPIView):
         if not user.groups.filter(name='KAdmin').exists():
             return Response({'error': 'You are not authorized to create stores.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data, context={'request': request})
+        print(serializer)
         serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+                    print(serializer.errors)  # Print the serializer errors for debugging
+                    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 class StoreDetail(generics.RetrieveUpdateDestroyAPIView): 

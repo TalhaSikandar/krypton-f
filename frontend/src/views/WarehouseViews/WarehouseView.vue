@@ -43,6 +43,7 @@ export default {
   },
   mounted() {
     this.getStores();
+    document.title = 'My Warehouses'
   },
   methods: {
     getStores() {

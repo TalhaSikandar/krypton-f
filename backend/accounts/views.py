@@ -178,3 +178,43 @@ class AdminSignupView(CreateView):
             return JsonResponse({'success_url': self.get_success_url()}, status=HTTP_201_CREATED)
         else:
             return JsonResponse(form.errors, status=400)
+
+
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+
+@api_view(['POST'])
+@permission_classes([AllowAny])  # Allow unauthenticated requests
+def custom_token_obtain_view(request):
+    # Your authentication logic to validate credentials and issue tokens
+    # Example logic: (Replace with your actual authentication logic)
+    username = request.data.get('username')
+    password = request.data.get('password')
+    if username and password:
+        # Validate credentials (Example: using Django User model)
+        user = authenticate(username=username, password=password)
+        if user:
+            # Issue tokens using SimpleJWT
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+            return Response({'access_token': access_token, 'refresh': refresh_token}, status=status.HTTP_200_OK)
+    
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+def custom_token_refresh_view(request):
+    refresh_token = request.data.get('refresh')
+    if refresh_token:
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+            return Response({'access': access_token}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response({'error': 'Refresh token not provided'}, status=status.HTTP_400_BAD_REQUEST)

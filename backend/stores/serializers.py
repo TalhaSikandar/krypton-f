@@ -33,6 +33,7 @@ class StoreSerializer(serializers.ModelSerializer):
         company = user.id
 
         manager_password = validated_data.pop('manager_password')
+        print("in seri")
 
         # Create a manager automatically
         company_data = Company.objects.get(pk=company)

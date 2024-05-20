@@ -50,6 +50,10 @@ export default {
       }
     };
   },
+  
+  mounted() {
+    document.title = 'Admin Signup | Krypton'
+  },
   methods: {
     getCsrfToken() {
       axios.get('/companies/csrf/')

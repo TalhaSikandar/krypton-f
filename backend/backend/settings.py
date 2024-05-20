@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # third parties
     'rest_framework',
     'rest_framework.authtoken', # generates auth tokens for http
+    'rest_framework_simplejwt',
     # 'rest_auth', # Not Working in 5.0 django
     'allauth', # new
     'allauth.account', # new
@@ -80,8 +81,18 @@ REST_FRAMEWORK = {
 
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.BasicAuthentication'
     ],
+}
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 MIDDLEWARE = [

@@ -13,11 +13,18 @@ import AdminSignupView from '../views/CompanyViews/AdminSignupView.vue'
 
 import LoginView from '../views/AccountsViews/LoginView.vue'
 
+import store from '../store'
+import { initializeAccount } from '../store/action'; // Adjust the path as necessary
+import Router from 'vue-router';
+
 const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardHomeView,
+    meta: {
+      requiredLogin: true,
+    },
     children: [
         {
           path: '/dashboard/home/',
@@ -77,7 +84,7 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'signin',
     component: LoginView,
     props: true
   },
@@ -113,4 +120,18 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiredLogin) && !store.state.authenticated) {
+    next ({name: 'sigin', query: {to: to.path}});
+  }
+  else
+  {
+  next();
+  }
+})
+
+router.beforeEach((to, from, next) => {
+  initializeAccount(store);
+  next();
+});
 export default router

@@ -74,6 +74,7 @@ export default {
   },
   mounted() {
     this.getStores();
+    document.title = 'My signInSsignIntores'
   },
   methods: {
     getStores() {
@@ -101,6 +102,7 @@ export default {
       this.showEditStoreModal = false;
     },
     addStore(newStoreData) {
+      console.log(newStoreData)
       axios
         .post('dashboard/stores/', newStoreData)
         .then(response => {

@@ -17,3 +17,7 @@ urlpatterns = [
 urlpatterns += [
     path('admin_signup/', views.AdminSignupView.as_view(), name='admin_signup'),
 ]
+urlpatterns += [
+    path('api/token/', views.custom_token_obtain_view, name='token_obtain_pair'),
+    path('api/token/refresh/', views.custom_token_refresh_view, name='token_refresh'),
+]
