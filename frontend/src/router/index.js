@@ -6,8 +6,12 @@ import WarehouseView from '../views/WarehouseViews/WarehouseView.vue'
 import EmployeeView from '../views/EmployeeView.vue'
 import SupplierView from '../views/SupplierView.vue'
 import SettingsView from '../views/SettingsView.vue'
-import LoginView from '../views/LoginView.vue'
 import HomeView from '../views/HomeView.vue'
+
+import CompanySignupView from '../views/CompanyViews/CompanySignupView.vue'
+import AdminSignupView from '../views/CompanyViews/AdminSignupView.vue'
+
+import LoginView from '../views/AccountsViews/LoginView.vue'
 
 const routes = [
   {
@@ -60,6 +64,23 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  {
+    path: '/signup/company',
+    name: 'companySignup',
+    component: CompanySignupView
+  },
+  {
+    path: '/signup/admin',
+    name: 'adminSignup',
+    component: AdminSignupView,
+    props: true
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+    props: true
+  },
   // {
   //   path: '/stores',
   //   name: 'stores',
@@ -85,11 +106,6 @@ const routes = [
   //   name: 'settings',
   //   component: SettingsView
   // },
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginView
-  },
 ]
 
 const router = createRouter({

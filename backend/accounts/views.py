@@ -55,22 +55,35 @@ def index(request):
 class LoginView(TemplateView):
     template_name = 'login.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('../home.html')  # Or your desired redirect URL
-        return super().dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return redirect('../home.html')  # Or your desired redirect URL
+    #     return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        username = request.POST['email']  # Use 'email' field per your model
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('../home.html')  # Or your desired success redirect URL
-        else:
-            error_message = 'Invalid username or password'
-            return self.render_to_response({'error_message': error_message})
+            content_type = request.content_type
+            if content_type == 'application/x-www-form-urlencoded':
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+            elif content_type == 'application/json':
+                try:
+                    data = json.loads(request.body)
+                    email = data.get('email')
+                    password = data.get('password')
+                except json.JSONDecodeError:
+                    return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+            else:
+                return JsonResponse({'error': 'Unsupported content type'}, status=400)
 
+            if email and password:
+                user = authenticate(request, username=email, password=password)
+                if user is not None and user.is_active:
+                    login(request, user)
+                    return JsonResponse({'message': 'Login successful'})
+                else:
+                    return JsonResponse({'error': 'Invalid username or password'}, status=400)
+            else:
+                return JsonResponse({'error': 'Email and password are required'}, status=400)
 class LogoutView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         logout(request)
@@ -126,3 +139,42 @@ class UserPasswordChangeView(PasswordChangeView):
 
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
     template_name = 'password_change_done.html'
+
+from django.urls import reverse_lazy
+from companies.models import Company
+from django.http import JsonResponse
+import json
+class AdminSignupView(CreateView):
+    model = CustomUser
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('user_login')
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        company_id = self.request.session.get('company_id')
+        if not company_id:
+            return JsonResponse({'error': 'Company ID not found in session'}, status=400)
+
+        try:
+            company = Company.objects.get(id=company_id)
+        except Company.DoesNotExist:
+            return JsonResponse({'error': 'Invalid company ID'}, status=400)
+
+        # Add company and role to the data
+        data['company'] = company.id
+        data['role'] = CustomUser.Types.ADMIN
+
+        form = self.form_class(data)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.company = company
+            user.role = CustomUser.Types.ADMIN
+            user.save()
+            self.request.session['company_id'] = None  # Clear the session data after use
+            return JsonResponse({'success_url': self.get_success_url()}, status=HTTP_201_CREATED)
+        else:
+            return JsonResponse(form.errors, status=400)

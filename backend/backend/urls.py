@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), # new
     path('accounts/', include('accounts.urls')), # new
+    path('companies/', include('companies.urls')), # new
     path('dashboard/stores/', include("stores.urls")), # new
     path('dashboard/warehouses/', include("warehouses.urls")), # new
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

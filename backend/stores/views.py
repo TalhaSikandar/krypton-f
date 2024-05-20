@@ -129,6 +129,7 @@ class StoreList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        print("In Store List")
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
                 # KAdmins can access stores for their company

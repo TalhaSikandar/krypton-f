@@ -17,7 +17,7 @@
 
             <div class="navbar-item">
               <div class="buttons">
-                <router-link to="/login" class="button is-light">Login</router-link>
+                <router-link :to="{name: 'companySignup' }" class="button is-light">Signup</router-link>
               </div>
             </div>
           </div>
