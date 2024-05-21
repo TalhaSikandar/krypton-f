@@ -122,35 +122,87 @@ from accounts.models import CustomUser
 #                 return store
 #         return False
 
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from .models import Store, StoreProduct
+from .serializers import StoreSerializer, StoreProductSerializer
+
+from warehouses.models import Warehouse, WarehouseProduct
+from warehouses.serializers import WarehouseSerializer, WarehouseProductSerializer
+
+from products.models import Product
+from products.serializers import ProductSerializer
+
+
+# View to handle adding products from warehouse to store
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def add_product_to_store(request, store_id):
+    user = request.user
+    if not user.groups.filter(name='KAdmin').exists():
+        return Response({'error': 'You are not authorized to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+    
+    try:
+        store = Store.objects.get(slug=store_slug, company=user.company)
+    except Store.DoesNotExist:
+        return Response({'error': 'Store not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    product_id = request.data.get('product_id')
+    warehouse_id = request.data.get('warehouse_id')
+    quantity = int(request.data.get('quantity', 0))
+
+    if quantity <= 0:
+        return Response({'error': 'Quantity must be greater than 0.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        warehouse_product = WarehouseProduct.objects.get(warehouse_id=warehouse_id, product_id=product_id)
+    except WarehouseProduct.DoesNotExist:
+        return Response({'error': 'Product not found in warehouse.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if warehouse_product.quantity < quantity:
+        return Response({'error': 'Insufficient product quantity in warehouse.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Decrease the product quantity from warehouse
+    warehouse_product.quantity -= quantity
+    warehouse_product.save()
+
+    # Add or update the product quantity in store
+    store_product, created = StoreProduct.objects.get_or_create(store=store, product_id=product_id)
+    store_product.quantity += quantity
+    store_product.save()
+
+    return Response({'message': 'Product successfully added to store.'}, status=status.HTTP_200_OK)
 class StoreList(generics.ListCreateAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        print("My user")
         user = self.request.user
-        print("In Store List")
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
+                print(user)
                 # KAdmins can access stores for their company
                 return Store.objects.filter(company=user.company)
             elif user.groups.filter(name='KManager').exists():
                 # KManagers can only access their own store
                 return Store.objects.filter(manager=user)
         # For any other user, return an empty queryset
-        queryset = Store.objects.all() 
+        queryset = Store.objects.none()
         return queryset 
     def create(self, request, *args, **kwargs):
-        user = CustomUser.objects.get(username="laptop")
-        request.user = user
-        print(request.data)
-        print(request.user)
+        # user = CustomUser.objects.get(username="laptop")
+        # request.user = user
+        # print(request.data)
+        # print(request.user)
         # user = request.user
+        user = self.request.user
         if not user.groups.filter(name='KAdmin').exists():
             return Response({'error': 'You are not authorized to create stores.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data, context={'request': request})
-        print(serializer)
-        serializer.is_valid(raise_exception=True)
+        print("In Store Creation")
         if not serializer.is_valid():
                     print(serializer.errors)  # Print the serializer errors for debugging
                     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -162,14 +214,24 @@ class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes = [permissions.IsAuthenticated] 
     def get_object(self): 
         user = self.request.user 
+        print(user)
         if user.is_authenticated: 
             if user.groups.filter(name='KAdmin').exists(): 
             # KAdmins can access stores for their company 
-                queryset = Store.objects.filter(company=user.company) 
+                store_id = int(self.kwargs['store_slug'])
+                store =  Store.objects.get(id=store_id) 
+                print(store)
+                return store
             elif user.groups.filter(name='KManager').exists(): 
                  #KManagers can only access their own store 
-                queryset = Store.objects.filter(manager=user) 
-            else: 
-                queryset = Store.objects.none() 
+                store = Store.objects.get(slug=self.kwargs['store_slug']) 
+                return store
         # If user is not authenticated, 
-        return get_object_or_404(queryset, slug=self.kwargs['store_slug'])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    def retrieve(self, request, *args, **kwargs):
+            instance = self.get_object()
+            if instance:
+                serializer = self.get_serializer(instance)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_404_NOT_FOUND)

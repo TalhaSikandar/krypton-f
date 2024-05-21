@@ -35,5 +35,5 @@ class Store(models.Model):
         return reverse('model-detail-view', args=[str(self.id)])
 class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=False, default=0, blank=True)
+    product = models.ForeignKey(Product, blank=True, on_delete=models.CASCADE)
+    quantity = models.IntegerField(null=True, default=0, blank=True)

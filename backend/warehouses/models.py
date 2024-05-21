@@ -9,7 +9,7 @@ from products.models import Product
 class Warehouse(models.Model):
 
     warehouse_name = models.CharField(max_length=200, blank=False, null=False, help_text="WareHouse Name")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
     products = models.ManyToManyField(Product, blank=True, through='WarehouseProduct', related_name="warehouses") # to make a new column amount used through ...
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True)
@@ -34,5 +34,5 @@ class Warehouse(models.Model):
 
 class WarehouseProduct(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, blank=True, on_delete=models.CASCADE)
     quantity = models.IntegerField(null=False, default=0, blank=True)

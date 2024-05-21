@@ -202,7 +202,7 @@ def custom_token_obtain_view(request):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
-            return Response({'access_token': access_token, 'refresh': refresh_token}, status=status.HTTP_200_OK)
+            return Response({'access_token': access_token, 'refresh': refresh_token, 'username' : user.username, 'company_name' : user.company.company_name}, status=status.HTTP_200_OK)
     
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 

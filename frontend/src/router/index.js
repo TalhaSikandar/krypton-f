@@ -88,6 +88,12 @@ const routes = [
     component: LoginView,
     props: true
   },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: LoginView,
+    props: true
+  },
   // {
   //   path: '/stores',
   //   name: 'stores',
@@ -129,9 +135,9 @@ router.beforeEach((to, from, next) => {
   next();
   }
 })
-
-router.beforeEach((to, from, next) => {
-  initializeAccount(store);
-  next();
-});
+//
+// router.beforeEach((to, from, next) => {
+//   initializeAccount(store);
+//   next();
+// });
 export default router

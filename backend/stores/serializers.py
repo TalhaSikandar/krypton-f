@@ -6,6 +6,7 @@ from .models import Store, StoreProduct
 from accounts.serializers import CustomUserSerializer
 from accounts.models import CustomUser
 from companies.models import Company
+from django.contrib.auth.models import Group
 
 class StoreProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
@@ -20,7 +21,7 @@ class StoreSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
     manager = CustomUserSerializer(read_only=True)
     manager_password = serializers.CharField(write_only=True, required=True)  # New password field
-    products = StoreProductSerializer(source='storeproduct_set', many=True)
+    products = StoreProductSerializer(many=True)
 
     class Meta:
         model = Store
@@ -30,14 +31,14 @@ class StoreSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user
-        company = user.id
-
+        company = user.company.id
+        # validated_data.pop('products', None)
         manager_password = validated_data.pop('manager_password')
         print("in seri")
 
         # Create a manager automatically
         company_data = Company.objects.get(pk=company)
-        manager_no = CustomUser.objects.filter(company=company, role='MANAGER').count() + 1
+        manager_no = CustomUser.objects.filter(company=company_data, role='MANAGER').count() + 1
         manager_email = f"{company_data.company_name.lower()}_manager{manager_no}@company.com"
         
         manager_data = {
@@ -49,9 +50,23 @@ class StoreSerializer(serializers.ModelSerializer):
         }
         
         manager = CustomUser.objects.create_user(**manager_data)
+        manager_group = Group.objects.get(name='KManager')
+        manager.groups.add(manager_group)
         store = Store.objects.create(company=company_data ,manager=manager, **validated_data)
         print("Store Added:\n", store)
         return store
+
+    def validate(self, attrs):
+        """Custom validation to allow optional products during creation."""
+        if not attrs.get('products', None):
+            # Allow creation even without products
+            return attrs
+        else:
+            # If products are provided, validate them individually
+            for product_data in attrs['products']:
+                product_serializer = StoreProductSerializer(data=product_data)
+                product_serializer.is_valid(raise_exception=True)  # Raise exception for invalid product data
+            return attrs
 # class StoreSerializer(serializers.ModelSerializer):
 #     contact = serializers.StringRelatedField(read_only=True)
 #     address = serializers.StringRelatedField(read_only=True)

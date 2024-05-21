@@ -80,6 +80,14 @@ export default {
 
         const token = response.data.access_token;
         this.$store.commit('setToken', token)
+
+        const username = response.data.username; // Adjust based on your API response
+        localStorage.setItem("username", username)
+
+        const company_name = response.data.company_name
+        localStorage.setItem("company_name", company_name)
+        // this.$store.status.username = username;
+
         localStorage.setItem("access_token", token)
         axios.defaults.headers.common["Authorization"] = "access_token" + token;
         console.log(token)
@@ -88,9 +96,9 @@ export default {
         toast({
           message: this.successMessage,
           type: 'is-success',
-          duration: 5000,
+          duration: 2000,
           dismissible: true,
-          position: 'bottom-right',
+          position: 'top-center',
         });
         this.$router.push('/dashboard'); // Replace with your dashboard route
 
@@ -100,7 +108,7 @@ export default {
         toast({
           message: this.errorMessage,
           type: 'is-danger',
-          duration: 5000,
+          duration: 5001,
           dismissible: true,
           position: 'bottom-right',
 
