@@ -142,6 +142,7 @@ class UserPasswordChangeDoneView(PasswordChangeDoneView):
 
 from django.urls import reverse_lazy
 from companies.models import Company
+from rest_framework import status
 from django.http import JsonResponse
 import json
 class AdminSignupView(CreateView):
@@ -153,38 +154,42 @@ class AdminSignupView(CreateView):
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+            return JsonResponse({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
 
-        company_id = self.request.session.get('company_id')
+        company_id = data.get('company_id')
+        print(company_id)
         if not company_id:
-            return JsonResponse({'error': 'Company ID not found in session'}, status=400)
+            return JsonResponse({'error': 'Company ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             company = Company.objects.get(id=company_id)
         except Company.DoesNotExist:
-            return JsonResponse({'error': 'Invalid company ID'}, status=400)
+            return JsonResponse({'error': 'Invalid company ID'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Add company and role to the data
         data['company'] = company.id
-        data['role'] = CustomUser.Types.ADMIN
-
+        data['role'] = CustomUser.Types.ADMIN  # Assuming CustomUser model
         form = self.form_class(data)
+        print(company)
+        print(form.is_valid())
         if form.is_valid():
             user = form.save(commit=False)
             user.company = company
             user.role = CustomUser.Types.ADMIN
+            admin_group = Group.objects.get(name='KAdmin')
+            user.groups.add(admin_group)
             user.save()
-            self.request.session['company_id'] = None  # Clear the session data after use
-            return JsonResponse({'success_url': self.get_success_url()}, status=HTTP_201_CREATED)
+            # Clear the session data after use (optional, not strictly necessary)
+            print("User Created")
+            return JsonResponse({'username': user.email}, status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse(form.errors, status=400)
+            return JsonResponse(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 @api_view(['POST'])

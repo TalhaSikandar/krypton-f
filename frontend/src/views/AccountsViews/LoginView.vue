@@ -47,11 +47,11 @@ import { toast } from 'bulma-toast';
 import { mapActions, mapGetters } from 'vuex'; // Import for Vuex integration
 
 export default {
-  name: 'LoginView',
+  name: 'signin',
   data() {
     return {
       login: { // Object to hold login credentials
-        email: '',
+        email:  localStorage.getItem("username") || '',
         password: '',
       },
       successMessage: null,

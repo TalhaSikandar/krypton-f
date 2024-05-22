@@ -62,6 +62,8 @@ export default {
         });
     },
     submitAdminForm() {
+      if (!localStorage.getItem("company_id"))
+        return;
       if (this.admin.password1 !== this.admin.password2) {
             toast({
               message: 'Passwords do not match!',
@@ -71,15 +73,30 @@ export default {
             });
             return;
           }
+      this.admin.company_id = localStorage.getItem("company_id")
+      localStorage.removeItem("company_id")
       axios.post('/accounts/admin_signup/', this.admin)
         .then(response => {
-          this.$router.push({ name: 'login' });
+          if (response.status === 201) { // Check for successful response
+            console.log("Admin Added:", response.data); // Log actual data
+            localStorage.setItem("username", response.data.username); // Assuming username exists
+          this.$router.push({ name: 'signin' });
+          } else {
+            toast({
+              message: 'Error signing up admin: Unexpected response', // Generic error message
+              type: 'is-danger',
+              duration: 5000,
+              pauseOnHover: true,
+              dismissible: true
+            });
+          }
         })
         .catch(error => {
           toast({
-            message: 'Error signing up admin: ' + JSON.stringify(error.response.data),
+            message: 'Error signing up admin: ' + JSON.stringify(error.response),
             type: 'is-danger',
             duration: 5000,
+            pauseOnHover: true,
             dismissible: true
           });
         });

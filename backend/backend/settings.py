@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'warehouses',
     'products',
     'raw_materials',
+    'suppliers',
 ]
 
 CORS_ALLOWED_ORIGINS=[

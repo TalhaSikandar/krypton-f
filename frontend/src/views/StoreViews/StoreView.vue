@@ -2,12 +2,9 @@
   <div class="stores">
     <h1>Stores</h1>
     <div class="columns is-multiline">
-      <div v-for="store in stores" :key="store.id" class="column is-half">
+      <div v-for="store in stores" :key="store.id" class="column is-4">
         <div class="card">
           <div class="card-header">
-            <!-- <p class="card-header-title"> -->
-            <!--   {{ store.company.company_name }} - {{ store.id }} -->
-            <!-- </p> -->
             <p class="card-header-title">
               Store - {{ store.id }}
             </p>
@@ -32,8 +29,9 @@
       </div>
     </div>
 
-    <button class="button is-primary" @click="openAddStoreModal">Add Store</button>
-    <!-- adding store -->
+    <p v-if="!this.stores.length">You have got no Stores, Kindly Add!</p>
+    <button @click="openAddStoreModal" class="button add-store" style="background-color: var(--primary-color); color: var(--text-color)">Add Store</button>
+
     <generic-form-component
       v-if="showAddStoreModal"
       @close="closeAddStoreModal"
@@ -42,7 +40,7 @@
       :form-data="editingStore"
       form-title="Add Store"
     ></generic-form-component>
-    <!-- editing store -->
+
     <edit-store-view
       v-if="showEditStoreModal"
       :storeId="currentStore"
@@ -92,6 +90,8 @@ export default {
         })
         .then(response => {
           this.stores = response.data;
+          if(this.stores)
+            console.log("Stores", this.stores);
         })
         .catch(error => {
           console.error('Error fetching stores:', error);
@@ -148,5 +148,73 @@ export default {
 </script>
 
 <style scoped>
-/* Add any custom styles if needed */
+.stores {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 1rem;
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.column {
+  flex: 0 0 25%;
+  max-width: 24%;
+}
+
+.card {
+  background-color: #f5f5f5; /* Light gray background for cards */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle box shadow for cards */
+  margin-bottom: 1rem;
+  box-shadow: 1px 19px 35px -3px rgba(0,0,0,0.75);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-header-title {
+  font-weight: bold;
+  color: var(--text-black-color);
+}
+
+.card-content {
+  padding-top: 1rem;
+  color: var(--text-black-color);
+}
+
+.content {
+  line-height: 1.5; /* Adjust line height for better readability */
+  color: var(--text-black-color);
+}
+
+strong {
+  color: var(--text-black-color);
+}
+
+.button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.button.add-store {
+  box-shadow: 1px 19px 35px -3px rgba(0,0,0,0.75);
+}
+.button:hover {
+  opacity: 0.5;
+}
 </style>

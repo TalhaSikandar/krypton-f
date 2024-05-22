@@ -80,6 +80,7 @@ class CompanySignupView(CreateView):
                 'company_id': self.object.id,
                 'success_url': self.get_success_url()
             }
+            print(self.request)
             return JsonResponse(response, status=201)
         else:
             return JsonResponse(form.errors, status=400)
@@ -110,11 +111,9 @@ class CompanyList(generics.ListCreateAPIView):
         queryset = Company.objects.all() 
         return queryset 
     def create(self, request, *args, **kwargs):
-        user = CustomUser.objects.filter(role=CustomUser.Types.ADMIN)[0]
-        request.user = user
+        user = request.user
         print(request.data)
         print(request.user)
-        # user = request.user
         if not user.groups.filter(name='KAdmin').exists():
             return Response({'error': 'You are not authorized to create companies.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data, context={'request': request})

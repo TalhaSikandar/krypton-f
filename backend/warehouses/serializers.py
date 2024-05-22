@@ -11,7 +11,6 @@ from companies.models import Company
 
 class WarehouseProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
-    
     class Meta:
         model = WarehouseProduct
         fields = ['product', 'quantity']

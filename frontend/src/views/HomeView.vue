@@ -6,31 +6,16 @@
 import axios from 'axios';
 
 export default {
-  name: 'StoresView',
+  name: 'landinghome',
   data() {
     return {
       stores: [],
     };
   },
   mounted() {
-    this.getStores();
     document.title = 'Home | Krypton'
   },
   methods: {
-    getStores() {
-      axios
-        .get('dashboard/stores/')
-        .then(response => {
-          this.stores = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching stores:', error);
-        });
-    },
-    formatDate(dateString) {
-      // Implement date formatting logic based on your requirements (e.g., using moment.js or a similar library)
-      return new Date(dateString).toLocaleDateString(); // Example using built-in Date object
-    },
   },
 };
 </script>

@@ -30,7 +30,7 @@ class Warehouse(models.Model):
         return self.warehouse_name
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
-        return reverse('model-detail-view', args=[str(self.id)])
+        return reverse('warehouse', args=[str(self.id)])
 
 class WarehouseProduct(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)

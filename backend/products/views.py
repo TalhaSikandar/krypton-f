@@ -14,7 +14,7 @@ class ProductList(generics.ListCreateAPIView):
         user = self.request.user
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
-                warehouse_pk = self.kwargs.get('warehouse_pk')
+                warehouse_pk = self.kwargs.get('warehouse_slug')
                 return Product.objects.filter(Warehouse__pk=warehouse_pk)
         # For any other user, return an empty queryset
         return Product.objects.none()
@@ -25,7 +25,7 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         user = self.request.user
-        warehouse_pk = self.kwargs.get('warehouse_pk')
+        warehouse_pk = self.kwargs.get('warehouse_slug')
         if user.is_authenticated:
             if user.groups.filter(name='KAdmin').exists():
                 queryset = Product.objects.filter(Warehouse__pk=warehouse_pk, pk=self.kwargs['pk'])

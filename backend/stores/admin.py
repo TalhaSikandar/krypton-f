@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Store
+from .models import Store, StoreProduct
 # Register your models here.
 
 from permissions.models import perm_stores
@@ -11,7 +11,12 @@ class StoreAdmin(admin.ModelAdmin):
         )
     prepopulated_fields = {"slug": ("company", "manager")}
 
-
 admin.site.register(Store, StoreAdmin)
+class StoreProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'store', 'product', 'quantity',
+        )
+
+admin.site.register(StoreProduct, StoreProductAdmin)
 
 # Register your models here.

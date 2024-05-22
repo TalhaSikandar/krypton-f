@@ -26,5 +26,6 @@ urlpatterns = [
     path('companies/', include('companies.urls')), # new
     path('dashboard/stores/', include("stores.urls")), # new
     path('dashboard/warehouses/', include("warehouses.urls")), # new
+    path('dashboard/suppliers/', include("warehouses.urls")), # new
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

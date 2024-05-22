@@ -74,11 +74,13 @@ export default {
     submitCompanyForm() {
       axios.post('/companies/signup/', this.company)
         .then(response => {
-      console.log(this.company)
+      // console.log(this.company)
+          localStorage.setItem("company_id", response.data.company_id);
+          console.log("Added", response.data.company_id)
           this.$router.push({ name: 'adminSignup', params: { company_id: response.data.company_id } });
         })
         .catch(error => {
-          console.log(this.company)
+          console.log("In Errors", this.company)
           toast({
             message: 'Error signing up company: ' + JSON.stringify(error.response.data),
             type: 'is-danger',

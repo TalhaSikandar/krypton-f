@@ -1,60 +1,62 @@
 <template>
   <div class="modal is-active">
-    <!-- <button class="button is-primary" @click="showEditModal = true">Edit Store</button> -->
-    <!-- <div class="modal" :class="{'is-active': showEditModal}"> -->
     <div class="modal-background" @click="close"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Edit Store</p>
-          <button class="delete" aria-label="close" @click="close"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="columns">
-            <div class="column is-half">
-              <div>
-                <label>Manager: </label>
-                <span>{{ store.manager }}</span>
-              </div>
-              <div>
-                <label>Store Number: </label>
-                <span>{{ store.id }}</span>
-              </div>
-            </div>
-            <div class="column is-half">
-              <div v-for="warehouse in warehouses" :key="warehouse.id">
-                <h3>{{ warehouse.warehouse_name }}</h3>
-                <table class="table is-fullwidth">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Quantity</th>
-                      <th>Add to Store</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="product in warehouse.products" :key="product.id">
-                      <td>{{ product.product_name }}</td>
-                      <td>{{ product.quantity }}</td>
-                      <td>
-                        <input type="number" v-model.number="product.quantityToAdd" min="0">
-                        <button @click="addProductToStore(warehouse.id, product.id, product.quantityToAdd)">Add</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Edit Store</p>
+        <button class="delete" aria-label="close" @click="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <!-- Manager and Store ID Section -->
+        <div class="columns">
+          <div class="column is-half">
+            <div>
+              <label>Manager: </label>
+              <span v-if="store.manager">{{ store.manager.username }}</span>
+              <span v-else>Loading...</span>
             </div>
           </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" @click="save">Save changes</button>
-          <button class="button" @click="close">Cancel</button>
-        </footer>
-      </div>
-    <!-- </div> -->
+          <div class="column is-half">
+            <div>
+              <label>Store Number: </label>
+              <span>{{ store.id }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warehouses and Products Section -->
+        <div v-for="warehouse in warehouses" :key="warehouse.id" class="box">
+          <h3 class="title is-4">
+            <span class="has-text-weight-normal is-size-5">Warehouse: </span>{{ warehouse.warehouse_name }}
+          </h3>
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Add to Store</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="product in warehouse.products" :key="product.id">
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>
+                  <input type="number" v-model.number="product.quantityToAdd" min="0">
+                  <button class="button is-small is-primary" @click="addProductToStore(warehouse.id, product.id, product.quantityToAdd)">Add</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" @click="save">Save changes</button>
+        <button class="button" @click="close">Cancel</button>
+      </footer>
+    </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import store from '@/store';

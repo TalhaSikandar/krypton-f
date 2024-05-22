@@ -21,4 +21,4 @@ class Rawmaterial(models.Model):
         return self.rawmaterial_name
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
-        return reverse('model-detail-view', args=[str(self.id)])
+        return reverse('rawmaterial-detail-view', args=[str(self.id)])

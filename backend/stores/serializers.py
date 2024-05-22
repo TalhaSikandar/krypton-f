@@ -34,25 +34,30 @@ class StoreSerializer(serializers.ModelSerializer):
         company = user.company.id
         # validated_data.pop('products', None)
         manager_password = validated_data.pop('manager_password')
-        print("in seri")
+        print("in store serializer")
 
         # Create a manager automatically
         company_data = Company.objects.get(pk=company)
         manager_no = CustomUser.objects.filter(company=company_data, role='MANAGER').count() + 1
         manager_email = f"{company_data.company_name.lower()}_manager{manager_no}@company.com"
-        
+        manager_username = f"{company_data.company_name.lower()}_manager{manager_no}"
         manager_data = {
-            'username': f"manager{manager_no}",
+            'username': manager_username,
             'email': manager_email,
             'company': company_data,
             'role': 'MANAGER',
             'password': manager_password  # Use the provided password
         }
-        
+        print(manager_data) 
         manager = CustomUser.objects.create_user(**manager_data)
         manager_group = Group.objects.get(name='KManager')
         manager.groups.add(manager_group)
-        store = Store.objects.create(company=company_data ,manager=manager, **validated_data)
+        store_data = validated_data.copy()
+        products = store_data.pop('products', None)
+        store = Store.objects.create(company=company_data ,manager=manager, **store_data)
+        if products:
+            store.products.set(products)
+        print("Manager Made") 
         print("Store Added:\n", store)
         return store
 

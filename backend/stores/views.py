@@ -204,8 +204,8 @@ class StoreList(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         print("In Store Creation")
         if not serializer.is_valid():
-                    print(serializer.errors)  # Print the serializer errors for debugging
-                    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            print(serializer.errors)  # Print the serializer errors for debugging
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 class StoreDetail(generics.RetrieveUpdateDestroyAPIView): 
