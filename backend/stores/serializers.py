@@ -21,7 +21,7 @@ class StoreSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
     manager = CustomUserSerializer(read_only=True)
     manager_password = serializers.CharField(write_only=True, required=True)  # New password field
-    products = StoreProductSerializer(many=True)
+    products = StoreProductSerializer(many=True, required=False)
 
     class Meta:
         model = Store

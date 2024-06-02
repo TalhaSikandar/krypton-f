@@ -1,12 +1,12 @@
-
 <template>
   <div class="container">
-    <h1>Company Signup</h1>
+    <h1 style="margin:auto !important; color: var(--text-black-color)">Company Signup Form</h1>
     <form @submit.prevent="submitCompanyForm">
+    <div class="sign-up-fields">
       <div class="field">
         <label class="label">Company Name</label>
         <div class="control">
-          <input class="input" v-model="company.company_name" type="text" required>
+          <input class="input" v-model="company.company_name" type="text" required placeholder="Enter Company Name">
         </div>
       </div>
       <div class="field">
@@ -25,7 +25,8 @@
           <textarea class="textarea" v-model="company.description"></textarea>
         </div>
       </div>
-      <button class="button is-primary" type="submit" @click="submitCompanyForm">Sign Up</button>
+      <button style="max-width: 25%" class="button is-primary" type="submit" @click="submitCompanyForm">Sign Up</button>
+      </div>
     </form>
   </div>
 </template>
@@ -102,3 +103,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+ .sign-up-fields {
+  display: flex;
+  flex-direction: column;
+ }
+ .container {
+   max-width: 40% !important;
+   padding: 2rem !important;
+   margin-top: 1rem !important;
+   border-radius: 2rem !important;
+ }
+</style>

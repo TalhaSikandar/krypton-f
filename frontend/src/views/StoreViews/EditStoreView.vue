@@ -3,8 +3,8 @@
     <div class="modal-background" @click="close"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Edit Store</p>
-        <button class="delete" aria-label="close" @click="close"></button>
+        <p class="modal-card-title"><strong>Edit Store</strong></p>
+        <button class="delete" @click="close"></button>
       </header>
       <section class="modal-card-body">
         <!-- Manager and Store ID Section -->
@@ -52,7 +52,7 @@
       </section>
       <footer class="modal-card-foot">
         <button class="button is-success" @click="save">Save changes</button>
-        <button class="button" @click="close">Cancel</button>
+        <button class="button close-button" @click="close">Cancel</button>
       </footer>
     </div>
   </div>

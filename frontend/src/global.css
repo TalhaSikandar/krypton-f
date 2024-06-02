@@ -29,6 +29,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
   --background-color: #1e1e2f;  /* Default background color (dark theme) */
+  --black-background-color: #14161a;  /* Default background color (dark theme) */
   --menu-background-color: #232336; /* Default menu background color (dark theme) */
   --text-color: #ffffff;  /* Default text color (light theme) */
   --text-black-color: #232336;  /* Default text color (light theme) */
@@ -39,6 +40,7 @@ p, h1, h2, h3, h4, h5, h6 {
   --border-color: #3a3a4a;
   --font-family: 'Poppins', sans-serif;
   --white-color: #3a3a4a;
+  --white-background-color: #f5f5f5;
 }
 /* :root { */
 /*   --background-color: #1f1f1f; */
@@ -63,3 +65,112 @@ p, h1, h2, h3, h4, h5, h6 {
 /*   --border-color: #353535; */
 /*   --font-family: 'Poppins', sans-serif; */
 /* } */
+
+.container {
+  background-color: var(--white-background-color); /* Light gray background for cards */
+}
+
+.input {
+  background-color: var(--primary-color);
+}
+
+/* card settings */
+.dashboard-content-container {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 1rem;
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.column {
+  flex: 0 0 25%;
+  max-width: 24%;
+}
+
+.card {
+  background-color: var(--white-background-color); /* Light gray background for cards */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle box shadow for cards */
+  margin-bottom: 1rem;
+  box-shadow: 1px 19px 35px -3px rgba(0,0,0,0.75);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-header-title {
+  font-weight: bold;
+  color: var(--text-black-color);
+}
+
+.card-content {
+  padding-top: 1rem;
+  color: var(--text-black-color);
+}
+
+.content {
+  line-height: 1.5; /* Adjust line height for better readability */
+  color: var(--text-black-color);
+}
+
+strong {
+  color: var(--text-black-color);
+}
+
+.button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.button{
+  box-shadow: 1px 19px 35px -3px rgba(0,0,0,0.75);
+}
+.button.edit-button{
+  box-shadow: 0px rgba(0,0,0,0.75);
+}
+.button.close-button {
+background-color: var(--white-background-color);
+color: var(--text-black-color);
+}
+.button:hover {
+  opacity: 0.5;
+}
+
+.label {
+  color: var(--text-black-color);
+}
+.modal-card-foot{
+  background-color: var(--black-background-color);
+  color: var(--white-background-color);
+  display: flex;
+  justify-content: space-between;
+}
+.modal-card-foot.label{
+  color: var(--white-background-color);
+}
+
+.modal-card-head{
+  background-color: var(--white-background-color);
+  color: var(--text-black-color);
+}
+
+.cross-icon-button {
+  position: relative;
+  margin-bottom: 3rem;
+}

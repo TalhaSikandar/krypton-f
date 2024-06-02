@@ -18,7 +18,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()
     address = serializers.StringRelatedField()
     company = CompanySerializer(read_only=True)
-    products = WarehouseProductSerializer(many=True)
+    products = WarehouseProductSerializer(many=True, required=False)
     class Meta:
         model = Warehouse
         fields = ['id', 'warehouse_name', 'products', 'company', 'contact', 'address', 'updated_at', ]

@@ -35,7 +35,7 @@
 
       <router-view style="height: 92vh; padding: 0"/>
     <div>
-      <p class="has-text-centered">© All rights reserved, Krypton inc. 2024</p>
+      <p class="copyright">© All rights reserved, Krypton inc. 2024</p>
     </div>
   </div>
 </template>
@@ -171,6 +171,13 @@ export default {
   color: #ffffff; /* Light text for copyright */
   margin-top: 1rem; /* Add some margin above copyright */
 }
+
+ .copyright {
+  color: #ffffff; /* Light text for copyright */
+   display: flex;
+   justify-content: center;
+   margin-top: 4px;
+ }
 .btn {
   display: flex;
   gap: 8px;
