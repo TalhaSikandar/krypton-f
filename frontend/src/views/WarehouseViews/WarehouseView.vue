@@ -47,7 +47,7 @@
       v-if="showEditWarehouseModalProducts"
       @close="closeEditWarehouseModalProducts"
       @save="saveWarehouse"
-      :warehouse_id="warehouse_id"
+      :warehouse_Id="warehouse_id"
     ></edit-warehouse-products-view>
   </div>
 </template>
@@ -114,6 +114,7 @@ export default {
     },
     openEditWarehouseModalProducts(warehouse) {
       this.warehouse_id = warehouse.id; 
+      console.log("id", this.warehouse_id)
       this.showEditWarehouseModalProducts = true;
     },
     closeEditWarehouseModal() {

@@ -7,7 +7,7 @@
         <button class="delete cross-icon-button"@click="close"></button>
       </header>
       <section class="modal-card-body">
-          <div v-if="warehouse.products.length">
+          <div v-if="warehouse.products">
             <p><strong>Products:</strong></p>
             <ul>
               <li v-for="product in warehouse.products" :key="product.product.id">
@@ -27,7 +27,7 @@
       v-if="showAddProductCard"
       @close="closeAddProductCard"
       @save="closeAddProductCard"
-      :warehouse_id="warehouse_id"
+      :warehouseId="warehouse_Id"
     ></add-product-view>
 </template>
 
@@ -48,15 +48,15 @@ export default {
     };
   },
   props: {
-    warehouse_id: {
+    warehouse_Id: {
       type: Number,
       required: true
     },
   },
   methods: {
    async fetchWarehouseData() {
-      console.log(this.warehouse_id);
-     await axios.get(`/dashboard/warehouses/${this.warehouse_id}/products`, {
+      console.log(this.warehouse_Id);
+     await axios.get(`/dashboard/warehouses/${this.warehouse_Id}/products`, {
         headers: {
             Authorization: `Bearer ${store.state.token}`
           },
@@ -75,7 +75,7 @@ export default {
       this.$emit('close');
     },
     closeAddProductCard() {
-      showAddProductCard = false; 
+      this.showAddProductCard = false; 
     },
   },
   mounted() {

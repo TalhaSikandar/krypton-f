@@ -14,7 +14,7 @@ class StoreAdmin(admin.ModelAdmin):
 admin.site.register(Store, StoreAdmin)
 class StoreProductAdmin(admin.ModelAdmin):
     list_display = (
-        'store', 'product', 'quantity',
+        'store', 'product', 'available_quantity',
         )
 
 admin.site.register(StoreProduct, StoreProductAdmin)

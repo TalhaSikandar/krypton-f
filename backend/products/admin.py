@@ -12,7 +12,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class ProductRawmaterialAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'product', 'raw_material',
+        'id', 'product', 'raw_material', 'required_quantity',
         )
 
 admin.site.register(Product, ProductAdmin)

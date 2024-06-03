@@ -6,8 +6,15 @@ from django.utils import timezone
 class Rawmaterial(models.Model):
 
     rawmaterial_name = models.CharField(max_length=200, blank=False, null=False, help_text="Raw Material Name")
+    description = models.TextField(blank=True, null=True, help_text="RawMaterial Description")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
+    class units(models.TextChoices):
+            NORMAL = "NORMAL", "Normal"
+            KG = "KG", "Kilogram"
+            CM = "CM", "Centimeter"
+            LITRE = "LITRE", "Litre"
+    unit_weight = models.CharField(max_length=10, default=units.NORMAL, choices=units.choices, blank=False, null=False, help_text="Enter the measuring weight for raw_material")
 
 
 

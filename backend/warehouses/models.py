@@ -35,4 +35,4 @@ class Warehouse(models.Model):
 class WarehouseProduct(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, blank=True, on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=False, default=0, blank=True)
+    available_quantity = models.PositiveIntegerField(null=False, default=0, blank=True, help_text="Quantity Available in warehouse")

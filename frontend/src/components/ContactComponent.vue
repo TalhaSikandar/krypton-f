@@ -7,7 +7,7 @@
     <input class="input" type="email" id="email" v-model="contact.email" placeholder="Enter email" />
 
     <label class="label" for="website">Website</label>
-    <input class="input" type="url" id="website" v-model="contact.website" placeholder="Enter website URL" />
+    <input class="input" type="url" id="website" v-model="contact.website" placeholder="Enter website URL" @input="prependHttps"/>
   </div>
 </template>
 
@@ -23,6 +23,13 @@ export default {
     return {
       contactData: this.contact,
     };
+  },
+  methods: {
+    prependHttps() {
+      if (this.contactData.website && !this.contactData.website.startsWith('https://')) {
+        this.contactData.website = 'https://' + this.contactData.website;
+      }
+    },
   },
   watch: {
     contactData: {

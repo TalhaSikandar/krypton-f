@@ -13,7 +13,7 @@ class StoreProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = StoreProduct
-        fields = ['product', 'quantity']
+        fields = ['product','unit_weight', 'available_quantity', ]
 
 class StoreSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()

@@ -13,7 +13,7 @@ class WarehouseProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     class Meta:
         model = WarehouseProduct
-        fields = ['product', 'quantity']
+        fields = ['product', 'available_quantity', 'unit_weight', ]
 class WarehouseSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()
     address = serializers.StringRelatedField()

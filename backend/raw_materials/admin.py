@@ -7,7 +7,7 @@ from .models import Rawmaterial
 
 class RawmaterialAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'rawmaterial_name',
+        'id', 'rawmaterial_name', 'unit_weight', 
         )
 
 

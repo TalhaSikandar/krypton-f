@@ -36,4 +36,4 @@ class Store(models.Model):
 class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, blank=True, on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=True, default=0, blank=True)
+    available_quantity = models.PositiveIntegerField(null=False, default=0, blank=True, help_text="Total Products Available in store")

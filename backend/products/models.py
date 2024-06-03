@@ -8,8 +8,15 @@ class Product(models.Model):
 
     product_name = models.CharField(max_length=200, blank=False, null=False, help_text="Product Name")
     raw_materials = models.ManyToManyField(Rawmaterial, blank=True, related_name="products", through="ProductRawMaterial")
+    description = models.TextField(blank=True, null=True, help_text="Product Description")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
+    class units(models.TextChoices):
+            NORMAL = "NORMAL", "Normal"
+            KG = "KG", "Kilogram"
+            CM = "CM", "Centimeter"
+            LITRE = "LITRE", "Litre"
+    unit_weight = models.CharField(max_length=10, default=units.NORMAL, choices=units.choices, blank=False, null=False, help_text="Enter the measuring weight for product")
 
 
 
@@ -27,4 +34,4 @@ class Product(models.Model):
 class ProductRawmaterial(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     raw_material = models.ForeignKey(Rawmaterial, on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=False, default=0, blank=True)
+    required_quantity = models.PositiveIntegerField(null=False, default=0, blank=True, help_text="raw material required to make the product")

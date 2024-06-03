@@ -8,7 +8,7 @@ from django.utils import timezone
 class Contact(models.Model):
     contact_no = models.CharField(max_length=11,blank=True, null=True, help_text="Enter contact no")
     email = models.EmailField(max_length=254, help_text="Enter email")
-    website = models.URLField(default='', max_length=200, blank=True, null=True, help_text="Enter your website url")
+    website = models.URLField(unique=False, default='', max_length=200, blank=True, null=True, help_text="Enter your website url")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
@@ -19,7 +19,7 @@ class Contact(models.Model):
 
         # related to admin page
     def __str__(self):
-        return self.contact_no
+        return str(self.id)
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])
@@ -36,7 +36,7 @@ class Address(models.Model):
         verbose_name_plural = "Addresses"
         # related to admin page
     def __str__(self):
-        return self.city
+        return str(self.id)
     def get_absolute_url(self):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])

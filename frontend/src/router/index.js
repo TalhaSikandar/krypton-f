@@ -4,7 +4,7 @@ import DashboardSectionView from '../views/DashboardSectionView.vue'
 import StoreView from '../views/StoreViews/StoreView.vue'
 import WarehouseView from '../views/WarehouseViews/WarehouseView.vue'
 import EmployeeView from '../views/EmployeeView.vue'
-import SupplierView from '../views/SupplierView.vue'
+import SupplierView from '../views/SupplierViews/SupplierView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import HomeView from '../views/HomeView.vue'
 
