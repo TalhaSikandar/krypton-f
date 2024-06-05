@@ -30,3 +30,7 @@ class SupplierRawmaterial(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name="supplierrawmaterial")
     rawmaterial = models.ForeignKey(Rawmaterial, blank=True, on_delete=models.CASCADE, related_name="supplierrawmaterial")
     available_quantity = models.PositiveIntegerField(default=0, blank=True, help_text="available quantity supplier has")
+    def __str__(self):
+        return '%d: %s: %s' % (self.id, self.supplier.name, self.rawmaterial.rawmaterial_name)
+    def get_absolute_url(self):
+        return reverse('supplierrawmaterial-detail-view', args=[str(self.id)])

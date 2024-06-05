@@ -11,11 +11,18 @@ class SupplierRawmaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupplierRawmaterial
         fields = ['id', 'rawmaterial', 'available_quantity']
+    def create(self, validated_data):
+        rawmaterial_data = validated_data.pop('rawmaterial')
+        print("In here nested", rawmaterial_data)
+        rawmaterial, created = Rawmaterial.objects.get_or_create(**rawmaterial_data)
+        supplier_rawmaterial = SupplierRawmaterial.objects.create(**validated_data)
+
+        return supplier_rawmaterial
 
 class SupplierSerializer(serializers.ModelSerializer):
     contact = ContactSerializer()
     address = AddressSerializer()
-    rawmaterials = SupplierRawmaterialSerializer(many=True, required=False)
+    rawmaterials = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Supplier
@@ -37,7 +44,7 @@ class SupplierSerializer(serializers.ModelSerializer):
             rawmaterial_name = rawmaterial_data.get('rawmaterial', {}).get('rawmaterial_name')
             unit_weight = rawmaterial_data.get('rawmaterial', {}).get('unit_weight')
             available_quantity = rawmaterial_data.get('rawmaterial', {}).get('available_quantity')
-            print("Name", rawmaterial_name)
+            print("Name", available_quantity)
 
             # Create or update Rawmaterial object
             rawmaterial, created = Rawmaterial.objects.get_or_create(
