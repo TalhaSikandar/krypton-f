@@ -47,6 +47,7 @@
               <th>Raw Material Name</th>
               <th>Quantity</th>
               <th>Unit</th>
+              <th>Rs/Unit</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -64,6 +65,7 @@
                   </select>
                 </div>
               </td>
+              <td><input v-model="rawmaterial.price_per_unit" class="input" type="number" placeholder="Enter raw material price" /></td>
               <td><button class="button is-danger is-small" @click="removeRawmaterial(index)">Remove</button></td>
             </tr>
           </tbody>
@@ -103,7 +105,7 @@ export default {
         industry: '',
         description: '',
         rawmaterials: [
-          { rawmaterial_name: '', available_quantity: 0, unit_weight: '' }
+          { rawmaterial_name: '', available_quantity: 0, unit_weight: '',  price_per_unit: '',is_deleted: false, rawmaterial_id:''}
         ]
       }
     };
@@ -136,7 +138,9 @@ export default {
       this.supplier.address = address;
     },
     addRawmaterial() {
-      this.supplier.rawmaterials.push({ rawmaterial_name: '', available_quantity: 0, unit_weight: '' });
+      this.supplier.rawmaterials.push(
+          { rawmaterial_name: '', available_quantity: 0, unit_weight: '',  price_per_unit: '',is_deleted: false, rawmaterial_id:''}
+      );
     },
     removeRawmaterial(index) {
       this.supplier.rawmaterials.splice(index, 1);

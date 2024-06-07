@@ -18,14 +18,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), # new
     path('accounts/', include('accounts.urls')), # new
     path('companies/', include('companies.urls')), # new
+    path('dashboard/suppliers/', include("suppliers.urls")), # new
     path('dashboard/stores/', include("stores.urls")), # new
     path('dashboard/warehouses/', include("warehouses.urls")), # new
-    path('dashboard/suppliers/', include("suppliers.urls")), # new
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

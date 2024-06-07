@@ -47,26 +47,26 @@
               <th>Raw Material Name</th>
               <th>Quantity</th>
               <th>Unit Weight</th>
-              <th>Unit</th>
+              <th>Rs/Unit</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(rawmaterial, index) in supplier.rawmaterials" :key="index">
-              <td><input v-model="rawmaterial.rawmaterial_name" class="input" type="text" placeholder="Enter raw material ID" /></td>
-              <td><input v-model="rawmaterial.available_quantity" class="input" type="number" placeholder="Enter quantity" /></td>
-              <td><input v-model="rawmaterial.unit_weight" class="input" type="text" placeholder="Enter unit weight" /></td>
-              <td>
-                <div class="select">
-                  <select v-model="rawmaterial.unit">
-                    <option value="NORMAL">Normal</option>
-                    <option value="KG">Kilogram</option>
-                    <option value="CM">Centimeter</option>
-                    <option value="LITRE">Litre</option>
-                  </select>
-                </div>
-              </td>
-              <td><button class="button is-danger is-small" @click="removeRawmaterial(index)">Remove</button></td>
+            <tr v-for="(rawmaterial, index) in displayRawmaterials" :key="index">
+                <td><input v-model="rawmaterial.rawmaterial_name" class="input" type="text" placeholder="Enter raw material ID" /></td>
+                <td><input v-model="rawmaterial.available_quantity" class="input" type="number" placeholder="Enter quantity" /></td>
+                <td>
+                  <div class="select">
+                    <select v-model="rawmaterial.unit_weight">
+                      <option value="NORMAL">Normal</option>
+                      <option value="KG">Kilogram</option>
+                      <option value="CM">Centimeter</option>
+                      <option value="LITRE">Litre</option>
+                    </select>
+                  </div>
+                </td>
+                <td><input v-model="rawmaterial.price_per_unit" class="input" type="number" placeholder="Enter raw material per price" /></td>
+                <td><button class="button is-danger is-small" @click="removeRawmaterial(index)">Remove</button></td>
             </tr>
           </tbody>
         </table>
@@ -111,9 +111,10 @@ export default {
         industry: '',
         description: '',
         rawmaterials: [
-          { rawmaterial_id: '', available_quantity: 0, unit_weight: '', unit: 'NORMAL' }
+          { rawmaterial_name: '', available_quantity: 0, unit_weight: '',  price_per_unit: '',is_deleted: false, rawmaterial_id:''}
         ]
-      }
+      },
+      displayRawmaterials: []
     };
   },
   created() {
@@ -122,12 +123,16 @@ export default {
   methods: {
     async fetchSupplier() {
       try {
-        const response = await axios.get(`/api/suppliers/${this.supplierId}/`, {
+        console.log("Unique Supplier", this.supplierId);
+        const response = await axios.get(`/dashboard/suppliers/${this.supplierId}/`, {
           headers: {
             Authorization: `Bearer ${this.$store.state.token}`,
           },
         });
         this.supplier = response.data;
+        this.displayRawmaterials = this.supplier.rawmaterials.filter(rawmaterial => !rawmaterial.is_deleted);
+        console.log("Unique Supplier", this.supplier);
+        console.log("Unique Supplier2", this.supplier.rawmaterials[0].rawmaterial_name);
       } catch (error) {
         console.error('Failed to fetch supplier', error);
       }
@@ -136,7 +141,8 @@ export default {
       this.$emit('close');
     },
     update() {
-      this.$emit('update', this.supplier);
+      // console.log(this.supplierId, "asdfa")
+      this.$emit('save', { supplier: this.supplier, supplierID: this.supplierId });
     },
     updateContact(contact) {
       this.supplier.contact = contact;
@@ -145,10 +151,17 @@ export default {
       this.supplier.address = address;
     },
     addRawmaterial() {
-      this.supplier.rawmaterials.push({ rawmaterial_id: '', available_quantity: 0, unit_weight: '', unit: 'NORMAL' });
+      const newRawmaterial = { rawmaterial_name: '', available_quantity: 0, unit_weight: '',  price_per_unit: '',is_deleted: false, rawmaterial_id: '' };
+      this.supplier.rawmaterials.push(newRawmaterial);
+      this.displayRawmaterials.push(newRawmaterial);
     },
     removeRawmaterial(index) {
-      this.supplier.rawmaterials.splice(index, 1);
+      const rawmaterial = this.displayRawmaterials[index];
+      const originalIndex = this.supplier.rawmaterials.findIndex(rm => rm.rawmaterial_id === rawmaterial.rawmaterial_id);
+      if (originalIndex !== -1) {
+        this.supplier.rawmaterials[originalIndex].is_deleted = true;
+      }
+      this.displayRawmaterials.splice(index, 1);
     }
   }
 };

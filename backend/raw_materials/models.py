@@ -15,6 +15,7 @@ class Rawmaterial(models.Model):
             CM = "CM", "Centimeter"
             LITRE = "LITRE", "Litre"
     unit_weight = models.CharField(max_length=10, default=units.NORMAL, choices=units.choices, blank=False, null=False, help_text="Enter the measuring weight for raw_material")
+    price = models.PositiveIntegerField(default=0, blank=False, null=False, help_text="enter price per unit")
 
 
 

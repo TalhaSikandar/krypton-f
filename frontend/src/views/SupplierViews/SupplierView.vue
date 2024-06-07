@@ -12,10 +12,11 @@
           </div>
           <div class="card-content">
             <div class="content">
-              <p v-if="supplier.contact"><strong>Contact:</strong> {{ supplier.contact }}</p>
-              <p v-if="supplier.address"><strong>Address:</strong> {{ supplier.address }}</p>
+              <p v-if="supplier.contact"><strong>Contact:</strong> {{ supplier.contact.email }}</p>
+              <p v-if="supplier.address"><strong>Address:</strong> {{ supplier.address.city }} - {{ supplier.address.country }}</p>
             </div>
           </div>
+            <button class="button view-raw-materials is-small" @click="openRawMaterialModal(supplier)">View Raw Materials</button>
         </div>
       </div>
     </div>
@@ -36,12 +37,19 @@
       @close="closeEditSupplierModal"
       @save="saveSupplier"
     ></edit-supplier-view>
+    <raw-material-list-view
+      v-if="showRawMaterialModal"
+      :supplierId="currentSupplier"
+      @close="closeRawMaterialModal"
+    ></raw-material-list-view>
+
   </div>
 </template>
 
 <script>
 import SaveSupplierView from './SaveSupplierView.vue';
 import EditSupplierView from './EditSupplierView.vue';
+import RawMaterialListView from './RawMaterialListView.vue';
 import axios from 'axios';
 import store from '@/store'; // import your Vuex store
 
@@ -50,12 +58,14 @@ export default {
   components: {
     SaveSupplierView,
     EditSupplierView,
+    RawMaterialListView,
   },
   data() {
     return {
       suppliers: [],
       showAddSupplierModal: false,
       showEditSupplierModal: false,
+      showRawMaterialModal: false,
       editingSupplier: null,
       newSupplierData: {
         contact: {
@@ -106,6 +116,14 @@ export default {
     closeEditSupplierModal() {
       this.showEditSupplierModal = false;
     },
+    openRawMaterialModal(supplier) {
+      console.log(supplier.id,"in sView")
+      this.currentSupplier = supplier.id;
+      this.showRawMaterialModal = true;
+    },
+    closeRawMaterialModal() {
+      this.showRawMaterialModal = false;
+    },
     addSupplier(newSupplierData) {
       console.log(newSupplierData);
       axios
@@ -115,28 +133,37 @@ export default {
           }
         })
         .then(response => {
-          this.supplier.push(response.data);
+          console.log("here", response.data);
+          this.suppliers.push(response.data);
           this.closeAddSupplierModal();
         })
         .catch(error => {
           console.error('Error adding supplier:', error);
         });
     },
-    saveSupplier(updatedSupplierData) {
+    saveSupplier(supplier) {
+      console.log(supplier.supplier.rawmaterials, "supplier")
+      console.log(supplier.supplierID, "supplierId")
       axios
-        .put(`dashboard/suppliers/${updatedSupplierData.id}/`, updatedSupplierData, {
+        .put(`dashboard/suppliers/${supplier.supplierID}/`, supplier.supplier, {
           headers: {
             Authorization: `Bearer ${store.state.token}`
           }
         })
         .then(response => {
-          const index = this.suppliers.findIndex(supplier => supplier.id === response.data.id);
-          this.$set(this.suppliers, index, response.data);
+          const index = this.suppliers.findIndex(s => s.id === response.data.id);
+          console.log(index,"index")
+          if (index !== -1) {
+            this.suppliers[index] = response.data;
+          } else {
+            this.suppliers.push(response.data);
+          }
           this.closeEditSupplierModal();
         })
         .catch(error => {
           console.error('Error saving supplier:', error);
         });
+      console.log("yes")
     }
   }
 };
