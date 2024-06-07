@@ -144,11 +144,19 @@ class SupplierDetail(generics.RetrieveUpdateDestroyAPIView):
             if rawmaterial_data['is_deleted']:
                 Rawmaterial.objects.get(id=rawmaterial_data['rawmaterial_id']).delete()
                 continue
-            rawmaterial, created = Rawmaterial.objects.get_or_create(
-                rawmaterial_name=rawmaterial_data['rawmaterial_name'],
-                unit_weight=rawmaterial_data['unit_weight'],
-                price=rawmaterial_data['price_per_unit']
-            )
+            rawmaterial = ''
+            if not rawmaterial_data['rawmaterial_id']:
+                rawmaterial = Rawmaterial.objects.create(
+                    rawmaterial_name = rawmaterial_data['rawmaterial_name'],
+                    unit_weight = rawmaterial_data['unit_weight'],
+                    price = rawmaterial_data['price_per_unit']
+                )
+            else: 
+                rawmaterial = Rawmaterial.objects.get(id=rawmaterial_data['rawmaterial_id'])
+                rawmaterial.rawmaterial_name = rawmaterial_data['rawmaterial_name']
+                rawmaterial.unit_weight = rawmaterial_data['unit_weight']
+                rawmaterial.price = rawmaterial_data['price_per_unit']
+                rawmaterial.save()  # Explicitly save the changes
             SupplierRawmaterial.objects.update_or_create(
                 supplier=instance,
                 rawmaterial=rawmaterial,

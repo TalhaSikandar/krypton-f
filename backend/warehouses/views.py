@@ -8,8 +8,12 @@ from rest_framework import generics, permissions
 from django.shortcuts import render
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from suppliers.models import SupplierRawmaterial
 
-from .models import Warehouse
+from raw_materials.serializers import RawmaterialSerializer
+from suppliers.serializers import SupplierRawmaterialSerializer
+
+from .models import Warehouse, WarehouseProduct
 from contacts.models import Contact, Address
 from companies.models import Company
 from .serializers import WarehouseSerializer
@@ -52,7 +56,7 @@ class WarehouseDetail(generics.RetrieveUpdateDestroyAPIView):
             else: 
                 queryset = Warehouse.objects.none() 
         # If user is not authenticated, 
-        return get_object_or_404(queryset, slug=self.kwargs['warehouse_slug'])
+        return get_object_or_404(queryset, pk=self.kwargs['warehouse_pk'])
 
 from .serializers import WarehouseProductSerializer
 from products.models import Product, ProductRawmaterial
@@ -62,14 +66,14 @@ from rest_framework.decorators import api_view, permission_classes
 
 class WarehouseProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = WarehouseProductSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated and user.groups.filter(name='KAdmin').exists():
-            warehouse_pk = self.kwargs.get('warehouse_pk')
-            return Product.objects.filter(warehouses__id=warehouse_pk)
+            warehouse = Warehouse.objects.get(id=self.kwargs.get('warehouse_pk'))
+            return WarehouseProduct.objects.filter(warehouse=warehouse)
         return Product.objects.none()
 
     def create(self, request, *args, **kwargs):
@@ -83,9 +87,12 @@ class WarehouseProductList(generics.ListCreateAPIView):
         product_data = request.data
         product_name = product_data['product_name']
         unit_weight = product_data['unit_weight']
+        available_quantity = product_data['available_quantity']
         description = product_data.get('description', '')
+        # warehouses = Product.warehoues.all()
+        # print(warehouses)
 
-        product, created = Product.objects.get_or_create(
+        product, created = Product.objects.update_or_create(
             product_name=product_name,
             defaults={
                 'unit_weight': unit_weight,
@@ -93,27 +100,27 @@ class WarehouseProductList(generics.ListCreateAPIView):
             }
         )
 
+        WarehouseProduct.objects.update_or_create(warehouse=warehouse, product=product, available_quantity=available_quantity)
+
         # Add the product to the warehouse
         warehouse.products.add(product)
 
         raw_materials_data = product_data.get('raw_materials', [])
         for material_data in raw_materials_data:
-            rawmaterial_name = material_data['name']
-            quantity = material_data['quantity']
-            material_unit_weight = material_data['unit_weight']
+            rawmaterial = material_data['rawmaterial']
+            required_quantity = material_data['required_quantity']
+            print(rawmaterial['id'], "yeah")
 
-            raw_material, created = Rawmaterial.objects.get_or_create(
-                rawmaterial_name=rawmaterial_name,
-                defaults={'unit_weight': material_unit_weight}
-            )
+            raw_material = Rawmaterial.objects.get(id=rawmaterial['id'])
 
-            ProductRawmaterial.objects.create(
+            ProductRawmaterial.objects.update_or_create(
                 product=product,
                 raw_material=raw_material,
-                required_quantity=quantity
+                required_quantity=required_quantity
             )
 
         serializer = ProductSerializer(product, context={'request': request})
+        print(serializer.data, "yes data")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class WarehouseProductDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -136,3 +143,25 @@ class WarehouseProductDetail(generics.RetrieveUpdateDestroyAPIView):
             return obj
         # If user is not authenticated, return 404 Not Found
         return get_object_or_404(Product.objects.none(), pk=self.kwargs['product_pk'], warehouses__pk=warehouse_pk)
+from suppliers.models import Supplier
+class RawmaterialList(generics.ListCreateAPIView):
+    queryset = SupplierRawmaterial.objects.all()
+    serializer_class = SupplierRawmaterialSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if user.groups.filter(name='KAdmin').exists():
+                suppliers_rawmaterials = SupplierRawmaterial.objects.filter(supplier__company=user.company)
+                # suppliers = []
+                # for supplier_r in suppliers_rawmaterials:
+                #     suppliers.append(Supplier.objects.get(id=supplier_r.supplier.id))
+                #
+                # for j in range(len(suppliers_rawmaterials)):
+                #     suppliers_rawmaterials[j].supplier.id = suppliers[j]
+                print(suppliers_rawmaterials, "all`")
+                return suppliers_rawmaterials
+        # For any other user, return an empty queryset
+        print("inasdfasdf rawmaterial list")
+        return get_object_or_404(SupplierRawmaterial.objects.none())

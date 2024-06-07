@@ -6,7 +6,7 @@ from raw_materials.models import Rawmaterial
 
 class Product(models.Model):
 
-    product_name = models.CharField(max_length=200, blank=False, null=False, help_text="Product Name")
+    product_name = models.CharField(max_length=200, unique=False, blank=False, null=False, help_text="Product Name")
     raw_materials = models.ManyToManyField(Rawmaterial, blank=True, related_name="products", through="ProductRawMaterial")
     description = models.TextField(blank=True, null=True, help_text="Product Description")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
@@ -32,6 +32,6 @@ class Product(models.Model):
         """Returns the URL to access a particular instance of MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])
 class ProductRawmaterial(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    raw_material = models.ForeignKey(Rawmaterial, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_rawmaterial")
+    raw_material = models.ForeignKey(Rawmaterial, on_delete=models.CASCADE, related_name="product_rawmaterial")
     required_quantity = models.PositiveIntegerField(null=False, default=0, blank=True, help_text="raw material required to make the product")

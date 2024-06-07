@@ -10,7 +10,7 @@ class SupplierRawmaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SupplierRawmaterial
-        fields = ['id', 'rawmaterial', 'available_quantity']
+        fields = ['id', 'rawmaterial', 'supplier', 'available_quantity']
     def create(self, validated_data):
         rawmaterial_data = validated_data.pop('rawmaterial')
         print("In here nested", rawmaterial_data)
@@ -26,7 +26,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = ['id', 'name', 'contact', 'address', 'industry', 'description', 'rawmaterials']
+        fields = ['id', 'name', 'contact', 'address', 'industry', 'description', 'rawmaterials', ]
 
     def create(self, validated_data):
         print("In creation of supplier here")

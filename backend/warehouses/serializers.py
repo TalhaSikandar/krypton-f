@@ -10,10 +10,10 @@ from companies.serializers import CompanySerializer
 from companies.models import Company
 
 class WarehouseProductSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    product = ProductSerializer(read_only=True)
     class Meta:
         model = WarehouseProduct
-        fields = ['product', 'available_quantity', 'unit_weight', ]
+        fields = [ 'product', 'available_quantity', ]
 class WarehouseSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()
     address = serializers.StringRelatedField()
