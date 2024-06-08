@@ -19,7 +19,7 @@
             <tr v-for="rawMaterial in supplierRawMaterials" :key="rawMaterial.id">
               <td>{{ rawMaterial.rawmaterial.rawmaterial_name }}</td>
               <td>{{ rawMaterial.rawmaterial.unit_weight }}</td>
-              <td>{{ rawMaterial.rawmaterial.price_per_unit }}</td>
+              <td>{{ rawMaterial.rawmaterial.price }}</td>
               <td>{{ rawMaterial.available_quantity }}</td>
             </tr>
           </tbody>
@@ -47,6 +47,7 @@ export default {
   },
   mounted() {
     this.fetchRawMaterials();
+    console.log(this.supplierRawMaterials, "give")
   },
   methods: {
     close() {

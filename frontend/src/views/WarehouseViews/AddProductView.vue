@@ -16,7 +16,6 @@
         <div class="field">
           <label class="label product-card" style="color: var(--white-background-color)">Unit Weight</label>
           <div class="control">
-            <!-- Add unit selector for product -->
             <div class="select">
               <select v-model="product.unit_weight">
                 <option value="NORMAL">Normal</option>
@@ -37,31 +36,53 @@
         <table class="table is-bordered is-striped is-narrow is-hoverable">
           <thead>
             <tr>
-              <th>Raw Material Name</th>
+              <th>Raw Material - Supplier - Price</th>
               <th>Quantity</th>
-              <th>Unit Weight</th>
-              <th>Unit</th> <!-- Added column for Unit -->
+              <th>Total Price</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(material, index) in rawMaterials" :key="index">
-              <td><input v-model="material.name" class="input" type="text" :placeholder="`Enter raw material ${index + 1} name`" /></td>
-              <td><input v-model="material.quantity" class="input" type="number" :placeholder="`Enter quantity for raw material ${index + 1}`" @input="checkQuantity(material)"/></td>
-              <td><input v-model="material.unit_weight" class="input" type="text" :placeholder="`Enter unit weight for raw material ${index + 1}`" /></td>
               <td>
                 <div class="select">
-                  <select v-model="material.unit">
-                    <option value="NORMAL">Normal</option>
-                    <option value="KG">Kilogram</option>
-                    <option value="CM">Centimeter</option>
-                    <option value="LITRE">Litre</option>
+                  <select v-model="rawMaterials[index]" @change="updateSupplier(index)">
+                    <option v-for="rawmaterial in rawmaterials" :key="rawmaterial.id" :value="rawmaterial">
+                      {{ rawmaterial.rawmaterial.rawmaterial_name }} - {{ rawmaterial.supplier.name }} - {{ rawmaterial.rawmaterial.price }}
+                    </option>
                   </select>
                 </div>
               </td>
+              <td>
+                <input v-model="material.required_quantity" class="input" type="number" placeholder="Enter quantity" @input="checkQuantity(index)" />
+              </td>
+              <td>{{ material.rawmaterial.price * material.required_quantity }}</td>
             </tr>
           </tbody>
         </table>
         <button class="button is-info" @click="addMaterialField">Add another raw material</button>
+        <!-- Total Cost -->
+        <div class="field is-horizontal">
+          <div class="field-body" style="display: flex; gap: 20px;">
+            <div class="field">
+              <label class="label product-card" style="color: var(--white-background-color)">Total Cost/Product</label>
+              <div class="control">
+                <input class="input" type="text" :value="totalCost" readonly />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label product-card" style="color: var(--white-background-color)">Quantity of Product</label>
+              <div class="control">
+                <input v-model="product.available_quantity" class="input" type="number" placeholder="Enter quantity" @input="checkProductQuantity" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label product-card" style="color: var(--white-background-color)">Total Product Cost</label>
+              <div class="control">
+                <input class="input" type="text" :value="totalProductCost" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
       <footer class="modal-card-foot">
         <button class="button is-success" @click="addProduct">Add Product</button>
@@ -74,6 +95,7 @@
 <script>
 import axios from 'axios';
 import store from '@/store'; // import your Vuex store
+import { toast } from 'bulma-toast';
 
 export default {
   data() {
@@ -82,29 +104,69 @@ export default {
         product_name: '',
         unit_weight: 'NORMAL',
         description: '',
+        available_quantity: 1,
       },
-      rawMaterials: [{ name: '', quantity: 1, unit_weight: 'NORMAL' }], // Initial raw material field
+      rawmaterials: [], // List of raw material IDs
+      rawMaterials: [], // This will hold the full raw material objects
     };
+  },
+  computed: {
+    totalCost() {
+      return this.rawMaterials.reduce((total, material) => {
+        return total + (material.rawmaterial.price * material.required_quantity);
+      }, 0);
+    },
+    totalProductCost() {
+      return this.totalCost * this.product.available_quantity;
+    },
   },
   methods: {
     close() {
       this.$emit('close');
     },
-    checkQuantity(material) {
-    // Ensure quantity is not below 1
-      if (material.quantity < 1) {
-      material.quantity = 1; // Set quantity to 1 if below 1
-      }
-    },
     addMaterialField() {
-      this.rawMaterials.push({ name: '', quantity: 1, unit_weight: 'NORMAL' });
+      this.rawMaterials.push({ rawmaterial: {}, supplier: {}, required_quantity: 1 });
+    },
+    async fetchRawMaterials() {
+      try {
+        const responseRawMaterials = await axios.get('/dashboard/warehouses/rawmaterials/', {
+          headers: {
+            Authorization: `Bearer ${store.state.token}`,
+          },
+        });
+        this.rawmaterials = responseRawMaterials.data;
+
+        const responseSuppliers = await axios.get('/dashboard/suppliers/', {
+          headers: {
+            Authorization: `Bearer ${store.state.token}`,
+          },
+        });
+        const suppliers = responseSuppliers.data;
+
+        // Match supplier IDs and create a new list accordingly
+        const updatedRawMaterials = this.rawmaterials.map(rawMaterial => {
+          const matchedSupplier = suppliers.find(supplier => supplier.id === rawMaterial.supplier);
+          return {
+            ...rawMaterial,
+            supplier: matchedSupplier ? matchedSupplier : 'Unknown Supplier',
+          };
+        });
+
+        this.rawmaterials = updatedRawMaterials;
+      } catch (error) {
+        alert(error.response.data.error);
+      }
     },
     async addProduct() {
       const productData = {
         product_name: this.product.product_name,
         unit_weight: this.product.unit_weight,
         description: this.product.description,
-        raw_materials: this.rawMaterials,
+        available_quantity: this.product.available_quantity,
+        raw_materials: this.rawMaterials.map(material => ({
+          rawmaterial: material.rawmaterial,
+          required_quantity: material.required_quantity,
+        })),
       };
 
       try {
@@ -119,6 +181,28 @@ export default {
         alert(error.response.data.error);
       }
     },
+    updateSupplier(index) {
+    },
+    checkQuantity(index) {
+      if (this.rawMaterials[index].required_quantity < 1) {
+        this.rawMaterials[index].required_quantity = 1;
+      }
+    },
+    checkProductQuantity() {
+      for (const material of this.rawMaterials) {
+        if (material.required_quantity > material.rawmaterial.available_quantity) {
+          toast({
+            message: `The specified amount cannot be added as the raw material "${material.rawmaterial.rawmaterial_name}" is low. Kindly contact the supplier or decrease the product quantity.`,
+            type: 'is-warning',
+            duration: 5000,
+          });
+          return;
+        }
+      }
+    },
+  },
+  mounted() {
+    this.fetchRawMaterials();
   },
   props: {
     warehouseId: {

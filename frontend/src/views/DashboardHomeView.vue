@@ -58,7 +58,7 @@
         </li>
         <li>
           <button>
-            <div class="icon-container">
+            <div class="icon-container" @click="handleLogout()">
               <i class="fas fa-sign-out"></i>
               <span class="menu-text">Logout</span>
             </div>
@@ -80,7 +80,17 @@ export default {
     ...mapState(['company_name']),
   },
   methods: {
+    handleLogout() {
+      // Handle logout logic (e.g., clear local storage, dispatch logout action)
+      this.$store.commit('removeToken')
+      // Clear local storage (optional)
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('company_name'); // Avoid storing password in local storage
+      // Redirect to login page after logout
+      this.$router.push({ name: 'home' });
     },
+  },
   mounted() {
     document.title = 'Dashboard | Krypton';
     this.$router.push({ name: 'dashboardhome' }); // Replace with your dashboard route

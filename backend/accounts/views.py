@@ -47,11 +47,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from rest_framework import generics, permissions
+
+from .serializers import CustomUserSerializer
 from .forms import CustomUserCreationForm  # Import if using a custom form
 from .models import CustomUser
 
 def index(request):
     redirect('home.html')
+class EmployeeList(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if user.groups.filter(name='KAdmin').exists():
+                users = CustomUser.objects.filter(company=user.company)
+                print(users, "Hi")
+                # KAdmins can access Warehouse for their company
+                return CustomUser.objects.filter(company=user.company)
+        # For any other user, return an empty queryset
+        queryset = CustomUser.objects.none()
+        return queryset 
+
+
 class LoginView(TemplateView):
     template_name = 'login.html'
 
@@ -120,6 +141,19 @@ class CreateUserView(CreateView):
             self.object = form.save()  # Save the created user
             return super().form_valid(form)
 
+class UserDetail(generics.RetrieveAPIView): 
+    queryset = CustomUser.objects.all() 
+    serializer_class = CustomUserSerializer 
+    # permission_classes = [permissions.IsAuthenticated] 
+    def get_object(self): 
+        user = self.request.user 
+        if user.is_authenticated: 
+            if user.groups.filter(name='KAdmin').exists(): 
+            # KAdmins can access stores for their company 
+                return CustomUser.objects.get(id=user.id) 
+        # If user is not authenticated, 
+        return CustomUser.objects.none() 
+        
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = CustomUser
     success_url = 'login'  # Or your desired redirect URL for successful deletion
@@ -140,6 +174,43 @@ class UserPasswordChangeView(PasswordChangeView):
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
     template_name = 'password_change_done.html'
 
+from django.contrib.auth.forms import PasswordChangeForm
+from rest_framework import permissions
+class CustomPasswordChangeView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        form = PasswordChangeForm(request.user, request.data)
+        if form.is_valid():
+            user = form.save()
+            return JsonResponse({'message': 'Password changed successfully'})
+        else:
+            errors = form.errors.get_json_data()
+            print(errors, "ok")
+            return JsonResponse({'errors': errors}, status=400)
+from django.shortcuts import get_object_or_404
+from stores.models import Store
+class CustomDeleteUserView(generics.GenericAPIView):
+    model = CustomUser
+    permission_classes = [permissions.IsAuthenticated]
+
+
+    def delete(self, request, *args, **kwargs):
+        user_id = kwargs.get('pk')
+        if not request.user.groups.filter(name='KAdmin').exists():
+            raise PermissionError('You are not authorized to delete users.')
+
+        user = get_object_or_404(CustomUser, pk=user_id)
+        store = Store.objects.get(manager=user)
+        store.manager=self.request.user
+        store.save()
+        user.delete()
+
+        return JsonResponse({'message': 'User deleted successfully'})
+
+    def get_success_url(self):
+        # This is not used, but required by DeleteView
+        return reverse_lazy('employees')  # Redirect to a view after deletion
 from django.urls import reverse_lazy
 from companies.models import Company
 from rest_framework import status

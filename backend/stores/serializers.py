@@ -39,7 +39,7 @@ class StoreSerializer(serializers.ModelSerializer):
         # Create a manager automatically
         company_data = Company.objects.get(pk=company)
         manager_no = CustomUser.objects.filter(company=company_data, role='MANAGER').count() + 1
-        manager_email = f"{company_data.company_name.lower()}_manager{manager_no}@company.com"
+        manager_email = f"{company_data.company_name.lower()}_manager{manager_no}@{company_data.company_name.lower()}.com"
         manager_username = f"{company_data.company_name.lower()}_manager{manager_no}"
         manager_data = {
             'username': manager_username,
@@ -57,6 +57,9 @@ class StoreSerializer(serializers.ModelSerializer):
         store = Store.objects.create(company=company_data ,manager=manager, **store_data)
         if products:
             store.products.set(products)
+        manager_email = f"{company_data.company_name.lower()}{store.id}_manager{manager_no}@{company_data.company_name.lower()}.com"
+        manager.email = manager_email
+        manager.save()
         print("Manager Made") 
         print("Store Added:\n", store)
         return store

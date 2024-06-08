@@ -6,8 +6,7 @@
           Login Form
         </p>
       </header>
-      <div class="card-content">
-        <div v-if="successMessage">
+      <div class="card-content"> <div v-if="successMessage">
           <p class="has-text-success">{{ successMessage }}</p>
         </div>
         <div v-if="errorMessage">

@@ -33,4 +33,3 @@ class WarehouseSerializer(serializers.ModelSerializer):
         warehouse = Warehouse.objects.create(company=company_data, **validated_data)
         print("Warehouse Added:\n", warehouse)
         return warehouse
-

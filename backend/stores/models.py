@@ -10,7 +10,8 @@ from products.models import Product
 class Store(models.Model):
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=False, null=True, related_name="stores")
-    manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True, related_name="stores")
+    # manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True, related_name="stores")
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=False, null=True, related_name="stores")
     products = models.ManyToManyField(Product, blank=True, through='StoreProduct', related_name="stores") # to make a new column amount used through ...
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True, related_name="stores")
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True, related_name="stores")

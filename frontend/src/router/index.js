@@ -3,7 +3,7 @@ import DashboardHomeView from '../views/DashboardHomeView.vue'
 import DashboardSectionView from '../views/DashboardSectionView.vue'
 import StoreView from '../views/StoreViews/StoreView.vue'
 import WarehouseView from '../views/WarehouseViews/WarehouseView.vue'
-import EmployeeView from '../views/EmployeeView.vue'
+import EmployeesView from '../views/EmployeesViews/EmployeesView.vue'
 import SupplierView from '../views/SupplierViews/SupplierView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import HomeView from '../views/HomeView.vue'
@@ -49,7 +49,7 @@ const routes = [
         {
           path: '/dashboard/employees',
           name: 'employees',
-          component: EmployeeView
+          component: EmployeesView
         },
         {
           path: '/dashboard/settings',
@@ -60,7 +60,15 @@ const routes = [
   },
   {
     path: '/about',
-    name: 'about',
+    name: 'aboutUs',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue') // also syntax
+  },
+  {
+    path: '/about',
+    name: 'contactUs',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

@@ -16,16 +16,16 @@
 
             <div class="navbar-item">
               <div class="nav-bar-btns">
+                <router-link :to="{ name: 'contactUs' }" class="navbar-item nav-bar-btn">Contact Us</router-link>
+                <router-link :to="{ name: 'aboutUs' }" class="navbar-item nav-bar-btn signin">About Us</router-link>
                 <!-- <LogoutComponent v-if="authenticated" @logoutConfirmed="handleLogout" :showLogoutCard="clickedLogout"/> -->
                 <router-link v-if="authenticated" :to="{ name: 'dashboard' }" class="navbar-item">Dashboard</router-link>
-                <router-link v-if="!authenticated" :to="{ name: 'companySignup' }" class="signup">Signup</router-link>
-                <div  v-if="authenticated" class="nav-bar-btn logout">
-                <div @click="handleLogout()">Logout</div>
-                </div>
-                <div  v-if="!authenticated" class="nav-bar-btn signin">
-                <router-link :to="{ name: 'signin' }" >Sign in</router-link>
-                </div>
-                <span v-if="authenticated && username" class="navbar-item">Hello,&nbsp;  <strong style="color: var(--accent-color)">{{ username }}</strong></span>
+                <router-link v-if="!authenticated" :to="{ name: 'companySignup' }" class="navbar-item nav-bar-btn signup">Sign up</router-link>
+                <router-link :to="{ name: 'signin'}"  v-if="authenticated" class="nav-bar-btn navbar-item" @click="handleLogout()">
+                  Log out
+                </router-link>
+                <router-link v-if="!authenticated" class="nav-bar-btn navbar-item signin":to="{ name: 'signin' }" >Log in</router-link>
+                <span v-if="authenticated && username" class="navbar-item">Hello,&nbsp;  <strong style="color: #9D4EDD">{{ username }}</strong></span>
               </div>
             </div>
           </div>
@@ -103,6 +103,8 @@ export default {
 }
 
 .navbar-containter {
+  font-family: 'Work Sans', sans-serif !important;
+	font-weight: 800;
   border: none; /* Remove red border */
   background-color: var(--background-color,#232336); /* Match dark background */
   padding: 0rem 0rem; /* Add some padding */
@@ -191,5 +193,10 @@ export default {
 
 .logout {
   margin-top: 6px;
+}
+.nav-bar-btns .navbar-item,
+.nav-bar-btns router-link,
+.nav-bar-btns .nav-bar-btn {
+  font-size: 1.1rem; /* Adjust font size as needed */
 }
 </style>

@@ -40,7 +40,7 @@
             <tbody>
               <tr v-for="product in warehouse.products" :key="product.id">
                 <td>{{ product.product_name }}</td>
-                <td>{{ product.quantity }}</td>
+                <td>{{ product.available_quantity }}</td>
                 <td>
                   <input type="number" v-model.number="product.quantityToAdd" min="0">
                   <button class="button is-small is-primary" @click="addProductToStore(warehouse.id, product.id, product.quantityToAdd)">Add</button>
