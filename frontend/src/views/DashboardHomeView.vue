@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-area">
     <aside class="menu">
-    <h1 class="dashboard-heading">Dashboard - <span class="comany_name">{{ company_name }}</span></h1>
+    <h1 class="dashboard-heading">Dashboard - <span class="comany_name" style="color: var(--primary-color)">{{ company_name }}</span></h1>
       <ul class="side-menu">
         <div class="main-routes">
         <li>
@@ -192,7 +192,7 @@ align-items: center; /* Center icons vertically (already defined) */
   width: 200px; /* Adjust width as needed */
   display: flex;
   flex-direction: column;
-  background-color: #232336; /* Adjust background color */
+  background-color: var(--menu-background-color); /* Adjust background color */
   color: #ffffff; /* Adjust text color */
   gap: 0.1rem;
   flex-wrap: nowrap;

@@ -31,9 +31,10 @@ p, h1, h2, h3, h4, h5, h6 {
 :root {
   --background-color: #1e1e2f;  /* Default background color (dark theme) */
   --black-background-color: #14161a;  /* Default background color (dark theme) */
-  --menu-background-color: #232336; /* Default menu background color (dark theme) */
+  --menu-background-color: #0a152f; /* Default menu background color (dark theme) */
+  /*background-color: var(--background-color,#232336); /* Match dark background */ 
   --text-color: #ffffff;  /* Default text color (light theme) */
-  --text-black-color: #232336;  /* Default text color (light theme) */
+  --text-black-color: #0a152f;  /* Default text color (light theme) */
   --text-color-secondary: #a5a5a5;
   --text-color-titles: #ffffff;
   --primary-color: #9d4edd;

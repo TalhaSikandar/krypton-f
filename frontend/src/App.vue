@@ -25,7 +25,7 @@
                   Log out
                 </router-link>
                 <router-link v-if="!authenticated" class="nav-bar-btn navbar-item signin":to="{ name: 'signin' }" >Log in</router-link>
-                <span v-if="authenticated && username" class="navbar-item">Hello,&nbsp;  <strong style="color: #9D4EDD">{{ username }}</strong></span>
+                <span v-if="authenticated && username" class="navbar-item">Hello,&nbsp;  <strong style="color: var(--primary-color)">{{ username }}</strong></span>
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default {
 /* Optional: Adjust content width if needed */
 .site-container {
   width: 100%; /* Adjust content width for responsiveness */
-  background-color: var(--background-color,#232336); /* Dark background color */
+  background-color: var(--menu-background-color); /* Dark background color */
   color: var(--white-color); /* Light text color */
   display: flex; /* Make it a flex container for vertical layout */
   flex-direction: column; /* Stack elements vertically */
@@ -106,7 +106,7 @@ export default {
   font-family: 'Work Sans', sans-serif !important;
 	font-weight: 800;
   border: none; /* Remove red border */
-  background-color: var(--background-color,#232336); /* Match dark background */
+  background-color: var(--menu-background-color); /* Dark background color */
   padding: 0rem 0rem; /* Add some padding */
 }
 
@@ -115,7 +115,7 @@ export default {
  }
 
 .navbar {
-  background-color: #232336; /* Match dark background */
+  background-color: var(--menu-background-color); /* Match dark background */
   border: none; /* Remove default border */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle box shadow for navbar */
 }
@@ -152,7 +152,7 @@ export default {
 }
 
 .navbar-menu {
-  background-color: #232336; /* Match dark background */
+  background-color: var(--menu-background-color); /* Match dark background */
 }
 
 .navbar-end {
