@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="card">
+    <div class="card"  style="border-radius: 2rem;">
       <div class="card-header">
         <h4 class="headline">Employees</h4>
       </div>
@@ -207,6 +207,8 @@ export default {
 
 .container {
   margin-top: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50px; /* add border radius for round corners */
 }
 
 .card {

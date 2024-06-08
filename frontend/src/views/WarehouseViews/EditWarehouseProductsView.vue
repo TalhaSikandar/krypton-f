@@ -8,7 +8,7 @@
       </header>
       <section class="modal-card-body">
         <div v-if="warehouse.products.length">
-          <h2 class="product_heading"><strong>Products:</strong></h2>
+          <h2 class="product_heading">Products:</h2>
           <table class="products-table">
             <thead>
               <tr>
