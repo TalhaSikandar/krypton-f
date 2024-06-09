@@ -14,7 +14,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('<int:company_pk>/', CompanyDetail.as_view(), name="company"),
+    path('<int:pk>/', CompanyDetail.as_view(), name="company"),
     path('', CompanyList.as_view(), name="companies"),
 ]
 

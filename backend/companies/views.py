@@ -120,31 +120,36 @@ class CompanyList(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions,status
+from rest_framework.response import Response
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView): 
     queryset = Company.objects.all() 
     serializer_class = CompanySerializer 
-    # permission_classes = [permissions.IsAuthenticated] 
+    permission_classes = [permissions.IsAuthenticated] 
     def get_object(self): 
         user = self.request.user 
         if user.is_authenticated: 
             if user.groups.filter(name='KAdmin').exists(): 
             # KAdmins can access stores for their company 
-                queryset = Company.objects.filter(company=user.company) 
+                queryset = Company.objects.filter(id=user.company.id) 
             elif user.groups.filter(name='KManager').exists(): 
                  #KManagers can only access their own store 
                 queryset = Company.objects.filter(manager=user) 
             else: 
                 queryset = Company.objects.none() 
         # If user is not authenticated, 
-        return get_object_or_404(queryset, slug=self.kwargs['company_pk'])
-    def perform_destroy(self, instance):
-            user = self.request.user
-            print("Company deleting...")
-            # Check if the user is an admin of the company
-            if user.groups.filter(name='KAdmin').exists() and instance.company == user.company:
-                instance.delete()
-                c_user = CustomUser.objects.get(id=user.id)
-                c_user.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)  # Return success response if deleted
-            else:
-                return Response({'error': 'You are not authorized to delete this company.'}, status=status.HTTP_403_FORBIDDEN)
+        return get_object_or_404(queryset, id=self.kwargs['pk'])
+    def perform_destroy(self, request):
+        user = self.request.user
+        instance = Company.objects.get(id=user.company.id)
+        print("Company deleting...", instance)
+        # Check if the user is an admin of the company
+        if user.groups.filter(name='KAdmin').exists() and instance.company_name == user.company.company_name:
+            print(user.id,"deleting user")
+            # c_user = CustomUser.objects.filter(compant=user.company)
+            # c_user.delete()
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)  # Return success response if deleted
+        else:
+            return Response({'error': 'You are not authorized to delete this company.'}, status=status.HTTP_403_FORBIDDEN)

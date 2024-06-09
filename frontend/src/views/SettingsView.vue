@@ -17,12 +17,18 @@ export default {
         const companyId = store.state.company_id; // Replace 'your_company_id' with the actual company ID
         console.log("doing it", store.state.company_id);
         if(companyId){
-          const response = await axios.delete(`dashboard/companies/${companyId}/`,{
+          const response = await axios.delete(`companies/${companyId}/`,{
           headers: {
             Authorization: `Bearer ${store.state.token}`
           }
           });
           console.log('Company deleted:', response.data);
+          this.$store.commit('removeToken')
+          // Clear local storage (optional)
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('company_name'); // Avoid storing password in local storage
+          // Redirect to login page after logout
           this.$router.push({ name: 'home' });
         }
         // Redirect or handle success message as needed
