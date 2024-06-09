@@ -9,8 +9,10 @@ django-cors-headers==4.3.1
 django-rest-auth-forked==0.9.5
 django-rest-framework==0.1.0
 djangorestframework==3.15.1
+djangorestframework-simplejwt==5.3.1
 idna==3.7
 pillow==10.3.0
+PyJWT==2.8.0
 pytz==2024.1
 requests==2.31.0
 six==1.16.0
