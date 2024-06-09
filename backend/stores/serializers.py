@@ -9,11 +9,12 @@ from companies.models import Company
 from django.contrib.auth.models import Group
 
 class StoreProductSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    product = serializers.StringRelatedField()
+    store = serializers.StringRelatedField()
     
     class Meta:
         model = StoreProduct
-        fields = ['product','unit_weight', 'available_quantity', ]
+        fields = ['id', 'store', 'product', 'available_quantity','sold_amount', ]
 
 class StoreSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()

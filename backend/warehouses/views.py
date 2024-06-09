@@ -165,3 +165,25 @@ class RawmaterialList(generics.ListCreateAPIView):
         # For any other user, return an empty queryset
         print("inasdfasdf rawmaterial list")
         return get_object_or_404(SupplierRawmaterial.objects.none())
+
+class ProductList(generics.ListCreateAPIView):
+    queryset = WarehouseProduct.objects.all()
+    serializer_class = WarehouseProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if user.groups.filter(name='KAdmin').exists():
+                warehouse_products = WarehouseProduct.objects.filter(warehouse__company=user.company)
+                # suppliers = []
+                # for supplier_r in suppliers_rawmaterials:
+                #     suppliers.append(Supplier.objects.get(id=supplier_r.supplier.id))
+                #
+                # for j in range(len(suppliers_rawmaterials)):
+                #     suppliers_rawmaterials[j].supplier.id = suppliers[j]
+                print(warehouse_products, "all`")
+                return warehouse_products
+        # For any other user, return an empty queryset
+        print("inasdfasdf product list")
+        return get_object_or_404(WarehouseProduct.objects.none())

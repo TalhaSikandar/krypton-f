@@ -2,7 +2,7 @@
   <div class="dashboard-content-container">
     <h1>Stores</h1>
     <div class="columns is-multiline">
-      <div v-for="store in stores" :key="store.id" class="column is-4">
+      <div v-for="(store, index) in paginatedStores" :key="store.id" class="column is-4">
         <div class="card">
           <div class="card-header">
             <p class="card-header-title">
@@ -15,20 +15,16 @@
               <p><strong>Manager:</strong> {{ store.manager.email }}</p>
               <p v-if="store.contact"><strong>Contact:</strong> {{ store.contact }}</p>
               <p v-if="store.address"><strong>Address:</strong> {{ store.address }}</p>
-              <div v-if="store.products.length">
-                <p><strong>Products:</strong></p>
-                <ul>
-                  <li v-for="product in store.products" :key="product.product.id">
-                    {{ product.product.product_name }} - Quantity: {{ product.quantity }}
-                  </li>
-                </ul>
-              </div>
+              <button class="button edit-button is-small" @click="openEditStoreModalProducts(store)">View Products</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <button class="button pagination-previous" @click="previousPage" :disabled="currentPage === 1">Previous</button>
+      <button class="button pagination-next" @click="nextPage" :disabled="currentPage >= totalPages">Next</button>
+    </nav>
     <p v-if="!this.stores.length">You have got no Stores, Kindly Add!</p>
     <button @click="openAddStoreModal" class="button add-store" style="background-color: var(--primary-color); color: var(--text-color)">Add Store</button>
 
@@ -38,6 +34,13 @@
       @save="addStore"
       :newStore="newStoreData"
     ></save-store-view>
+
+    <edit-store-products
+      v-if="showEditStoreModalProducts"
+      @close="closeEditStoreModalProducts"
+      @save="saveStore"
+      :store_Id="store_id"
+    ></edit-store-products>
 
     <edit-store-view
       v-if="showEditStoreModal"
@@ -51,6 +54,7 @@
 <script>
 import saveStoreView from './saveStoreView.vue';
 import EditStoreView from './EditStoreView.vue';
+import EditStoreProducts from './EditStoreProducts.vue';
 import axios from 'axios';
 import store from '@/store'; // import your Vuex store
 
@@ -58,14 +62,31 @@ export default {
   name: 'StoreView',
   components: {
     saveStoreView,
+    EditStoreProducts,
     EditStoreView,
+  },
+  computed: {
+    // Calculate total number of pages based on stores and items per page
+    totalPages() {
+      return Math.ceil(this.stores.length)*6; // Change '2' to adjust items per page
+    },
+
+    // Paginate the stores based on current page
+    paginatedStores() {
+      const start = (this.currentPage - 1)*6 ; // Change '2' to adjust items per page
+      const end = start + 6; // Change '2' to adjust items per page
+      return this.stores.slice(start, end);
+    }
   },
   data() {
     return {
+      currentPage: 1,
       stores: [],
       showAddStoreModal: false,
       showEditStoreModal: false,
+      showEditStoreModalProducts: false,
       editingStore: null,
+      store_id: '',
       newStoreData: {
         contact: {
           contact_no: '',
@@ -116,6 +137,14 @@ export default {
     closeEditStoreModal() {
       this.showEditStoreModal = false;
     },
+    openEditStoreModalProducts(store) {
+      this.store_id = store.id; 
+      console.log("id", this.store_id)
+      this.showEditStoreModalProducts = true;
+    },
+    closeEditStoreModalProducts() {
+      this.showEditStoreModalProducts = false;
+    },
     addStore(newStoreData) {
       console.log(newStoreData);
       axios
@@ -147,8 +176,20 @@ export default {
         .catch(error => {
           console.error('Error saving store:', error);
         });
-    }
-  }
+    },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+
+    // Switch to next page
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+  },
 };
 </script>
 

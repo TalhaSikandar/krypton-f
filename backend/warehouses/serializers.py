@@ -1,5 +1,6 @@
 
 from rest_framework import serializers
+from rest_framework.relations import StringRelatedField
 # from contacts.serializers import ContactSerializer, AddressSerializer
 # from companies.serializers import CompanySerializer
 from .models import Warehouse
@@ -11,9 +12,10 @@ from companies.models import Company
 
 class WarehouseProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
+    warehouse = serializers.StringRelatedField()
     class Meta:
         model = WarehouseProduct
-        fields = [ 'product', 'available_quantity', ]
+        fields = ['warehouse', 'product', 'available_quantity', ]
 class WarehouseSerializer(serializers.ModelSerializer):
     contact = serializers.StringRelatedField()
     address = serializers.StringRelatedField()

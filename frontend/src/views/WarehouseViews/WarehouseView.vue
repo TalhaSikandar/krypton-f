@@ -22,14 +22,14 @@
               <!--     </li> -->
               <!--   </ul> -->
               <!-- </div> -->
-            <button class="button edit-button is-small" @click="openEditWarehouseModalProducts(warehouse)">Products</button>
+            <button class="button edit-button is-small" @click="openEditWarehouseModalProducts(warehouse)">View Products</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <p v-if="!this.warehouses.length">You have got no Stores, Kindly Add!</p>
+    <p v-if="!this.warehouses.length">You have got no Warehouses, Kindly Add!</p>
     <button class="button is-primary" @click="openAddWarehouseModal">Add Warehouse</button>
     <save-warehouse-view
       v-if="showAddWarehouseModal"
@@ -117,11 +117,11 @@ export default {
       console.log("id", this.warehouse_id)
       this.showEditWarehouseModalProducts = true;
     },
-    closeEditWarehouseModal() {
-      this.showEditWarehouseModal = false;
-    },
     closeEditWarehouseModalProducts() {
       this.showEditWarehouseModalProducts = false;
+    },
+    closeEditWarehouseModal() {
+      this.showEditWarehouseModal = false;
     },
     addWarehouse(newWarehouseData) {
       console.log(newWarehouseData);

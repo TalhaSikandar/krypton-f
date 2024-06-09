@@ -1,70 +1,72 @@
 <template>
   <div class="dashboard-area">
     <aside class="menu">
-    <h1 class="dashboard-heading">Dashboard - <span class="comany_name" style="color: var(--primary-color)">{{ company_name }}</span></h1>
       <ul class="side-menu">
+        <h1 class="dashboard-heading">Dashboard - <span class="comany_name" style="color: var(--primary-color)">{{ company_name }}</span></h1>
         <div class="main-routes">
-        <li>
-          <router-link :to="{ name: 'dashboardhome' }" exact :class="{ 'is-active': $route.name === 'dashboardhome' }">
-            <div class="icon-container">
-              <i class="fas fa-home"></i>
-              <span class="menu-text">Home</span>
-            </div>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'stores' }" exact :class="{ 'is-active': $route.name === 'stores' }">
-            <div class="icon-container">
-              <i class="fas fa-store"></i>
-              <span class="menu-text">Stores</span>
-            </div>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'warehouses' }" exact :class="{ 'is-active': $route.name === 'warehouses' }">
-            <div class="icon-container">
-              <i class="fas fa-warehouse"></i>
-              <span class="menu-text">Warehouses</span>
-            </div>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'suppliers' }" exact :class="{ 'is-active': $route.name === 'suppliers' }">
-            <div class="icon-container">
-              <i class="fas fa-truck"></i>
-              <span class="menu-text">Suppliers</span>
-            </div>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="{ name: 'employees' }" exact :class="{ 'is-active': $route.name === 'employees' }">
-            <div class="icon-container">
-              <i class="fas fa-users"></i>
-              <span class="menu-text">Employees</span>
-            </div>
-          </router-link>
-        </li>
+          <li>
+            <router-link :to="{ name: 'dashboardhome' }" exact :class="{ 'is-active': $route.name === 'dashboardhome' }">
+              <div class="icon-container">
+                <i class="fas fa-home"></i>
+                <span class="menu-text">Home</span>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'stores' }" exact :class="{ 'is-active': $route.name === 'stores' }">
+              <div class="icon-container">
+                <i class="fas fa-store"></i>
+                <span class="menu-text">Stores</span>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'warehouses' }" exact :class="{ 'is-active': $route.name === 'warehouses' }">
+              <div class="icon-container">
+                <i class="fas fa-warehouse"></i>
+                <span class="menu-text">Warehouses</span>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'suppliers' }" exact :class="{ 'is-active': $route.name === 'suppliers' }">
+              <div class="icon-container">
+                <i class="fas fa-truck"></i>
+                <span class="menu-text">Suppliers</span>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'employees' }" exact :class="{ 'is-active': $route.name === 'employees' }">
+              <div class="icon-container">
+                <i class="fas fa-users"></i>
+                <span class="menu-text">Employees</span>
+              </div>
+            </router-link>
+          </li>
         </div>
+      </ul>
+      <ul class="side-menu">
         <div class="settings-routes">
-        <li>
-          <hr class="separator"> </li>
-        <li>
-          <router-link :to="{ name: 'settings' }" exact :class="{ 'is-active': $route.name === 'settings' }">
-            <div class="icon-container">
-              <i class="fas fa-cogs"></i>
-              <span class="menu-text">Settings</span>
-            </div>
-          </router-link>
-        </li>
-        <li>
-          <button>
-            <div class="icon-container" @click="handleLogout()">
-              <i class="fas fa-sign-out"></i>
-              <span class="menu-text">Logout</span>
-            </div>
-          </button>
-        </li>
-          </div>
+          <li>
+            <hr class="separator"> </li>
+          <li>
+            <router-link :to="{ name: 'settings' }" exact :class="{ 'is-active': $route.name === 'settings' }">
+              <div class="icon-container">
+                <i class="fas fa-cogs"></i>
+                <span class="menu-text">Settings</span>
+              </div>
+            </router-link>
+          </li>
+          <li>
+            <button>
+              <div class="icon-container" @click="handleLogout()">
+                <i class="fas fa-sign-out"></i>
+                <span class="menu-text">Logout</span>
+              </div>
+            </button>
+          </li>
+        </div>
       </ul>
     </aside>
     <main class="content" style="margin: 24px 0px" >
@@ -124,11 +126,11 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   border: 1px solid var(--border-color);
   margin: 24px 0px;
   border-top-right-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  gap: 0rem;
 }
 
 .menu .title {
@@ -193,12 +195,12 @@ align-items: center; /* Center icons vertically (already defined) */
   display: flex;
   flex-direction: column;
   background-color: var(--menu-background-color); /* Adjust background color */
-  color: #ffffff; /* Adjust text color */
-  gap: 0.1rem;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: normal;
-  align-content: normal;
+  color: var(--white-background-color); /* Adjust text color */
+  /* gap: 2rem; */
+  /* flex-wrap: nowrap; */
+  justify-content: space-between !important;
+  /* align-items: normal; */
+  /* align-content: normal; */
 }
 .side-menu li {
   margin: 0rem 0; /* Adjust spacing between items */
@@ -234,6 +236,9 @@ align-items: center; /* Center icons vertically (already defined) */
 }
 .company_name {
   font-weight: heavy;
+}
+.settings-routes {
+  margin-bottom:2rem;
 }
 
 

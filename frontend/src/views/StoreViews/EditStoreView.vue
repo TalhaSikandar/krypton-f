@@ -9,45 +9,24 @@
       <section class="modal-card-body">
         <!-- Manager and Store ID Section -->
         <div class="columns">
-          <div class="column is-half">
             <div>
               <label>Manager: </label>
               <span v-if="store.manager">{{ store.manager.username }}</span>
               <span v-else>Loading...</span>
             </div>
-          </div>
-          <div class="column is-half">
             <div>
               <label>Store Number: </label>
               <span>{{ store.id }}</span>
             </div>
-          </div>
         </div>
 
-        <!-- Warehouses and Products Section -->
-        <div v-for="warehouse in warehouses" :key="warehouse.id" class="box">
-          <h3 class="title is-4">
-            <span class="has-text-weight-normal is-size-5">Warehouse: </span>{{ warehouse.warehouse_name }}
-          </h3>
-          <table class="table is-fullwidth">
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Add to Store</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="product in warehouse.products" :key="product.id">
-                <td>{{ product.product_name }}</td>
-                <td>{{ product.available_quantity }}</td>
-                <td>
-                  <input type="number" v-model.number="product.quantityToAdd" min="0">
-                  <button class="button is-small is-primary" @click="addProductToStore(warehouse.id, product.id, product.quantityToAdd)">Add</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="field" v-if="store.contact">
+          <label class="label">Contact</label>
+          <ContactNormalComponent :contact="store.contact" @update-contact="updateContact" />
+        </div>
+        <div class="field" v-if="store.address">
+          <label class="label">Address</label>
+          <AddressComponent :address="store.address" @update-address="updateAddress" />
         </div>
       </section>
       <footer class="modal-card-foot">
@@ -57,9 +36,12 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 import store from '@/store';
+import ContactNormalComponent from '../../components/ContactNormalComponent.vue';
+import AddressComponent from '../../components/AddressComponent.vue';
 
 export default {
   name: 'EditStoreView',
@@ -69,93 +51,71 @@ export default {
       required: true
     }
   },
+  components: {
+    ContactNormalComponent,
+    AddressComponent,
+  },
   data() {
     return {
-      showEditModal: false,
-      store: {},
-      warehouses: [],
+      store: {
+        contact: {
+          contact_no: '',
+          website: '',
+          email: '',
+        },
+        address: {
+          city: '',
+          country: '',
+        },
+        manager: {
+          username: ''
+        },
+      },
     };
   },
-  mounted() {
-    // this.fetchStoreData(),
-    // this.fetchWarehouses()
-  },
   methods: {
-   async fetchStoreData() {
-      // Fetch store data from the backend
-      // console.log("StoreId");
-      // console.log(this.storeId);
-     await axios.get(`/dashboard/stores/${this.storeId}/`, {
-        headers: {
-            Authorization: `Bearer ${store.state.token}`
-          },
-      })
-        .then(response => {
-          this.store = response.data;
-          console.log(this.store.manager.username)
-        }).catch(error => {
-          alert(error.response.data.error);
-        });
-    },
-   async fetchWarehouses() {
-      // Fetch warehouses data from the backend
-     await axios.get('/dashboard/warehouses/', {
-
-        headers: {
-            Authorization: `Bearer ${store.state.token}`
-          },
-      })
-        .then(response => {
-          this.warehouses = response.data.map(warehouse => {
-            return {
-              ...warehouse,
-              products: warehouse.products.map(product => ({
-                ...product,
-                quantityToAdd: 0
-              }))
-            };
-          });
-        }).catch(error => {
-          alert(error.response.data.error);
-        });
-    },
-   async addProductToStore(warehouseId, productId, quantity) {
-      if (quantity <= 0) {
-        alert("Quantity must be greater than 0.");
-        return;
-      }
-     await axios.post(`/dashboard/stores/${this.storeId}/add-product/`, {
+    async fetchStoreData() {
+      await axios.get(`/dashboard/stores/${this.storeId}/`, {
         headers: {
           Authorization: `Bearer ${store.state.token}`
         },
-        warehouse_id: warehouseId,
-        product_id: productId,
-        quantity: quantity
-      }).then(response => {
-          alert(response.data.message);
-          this.fetchStoreData(); // Refresh store data
-          this.fetchWarehouses(); // Refresh warehouses data
+      })
+        .then(response => {
+          this.store = response.data;
         }).catch(error => {
           alert(error.response.data.error);
         });
     },
-  close() {
-    this.$emit('close');
+    close() {
+      this.$emit('close');
+    },
+    async save() {
+      await axios.put(`/dashboard/stores/${this.storeId}/`, this.store, {
+        headers: {
+          Authorization: `Bearer ${store.state.token}`
+        },
+      })
+        .then(response => {
+          this.$emit('save', response.data);
+          this.close();
+        }).catch(error => {
+          alert(error.response.data.error);
+        });
+    },
+    updateContact(newContact) {
+      this.store.contact = newContact;
+    },
+    updateAddress(newAddress) {
+      this.store.address = newAddress;
+    },
   },
-  save() {
-    this.$emit('save', store);
-    this.$emit('close');
-  },
-  },
-
   created() {
     this.fetchStoreData();
-    this.fetchWarehouses();
   }
 };
 </script>
 
-<style>
+<style scoped>
 .modal-card {
   max-width: 90%;
   width: auto;

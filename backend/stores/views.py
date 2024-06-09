@@ -218,13 +218,13 @@ class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
         if user.is_authenticated: 
             if user.groups.filter(name='KAdmin').exists(): 
             # KAdmins can access stores for their company 
-                store_id = int(self.kwargs['store_slug'])
+                store_id = int(self.kwargs['store_pk'])
                 store =  Store.objects.get(id=store_id) 
                 print(store)
                 return store
             elif user.groups.filter(name='KManager').exists(): 
                  #KManagers can only access their own store 
-                store = Store.objects.get(slug=self.kwargs['store_slug']) 
+                store = Store.objects.get(id=self.kwargs['store_pk']) 
                 return store
         # If user is not authenticated, 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -235,3 +235,143 @@ class StoreDetail(generics.RetrieveUpdateDestroyAPIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_404_NOT_FOUND)
+
+class StoreProductList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = StoreProductSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and user.groups.filter(name='KAdmin').exists():
+            store = Store.objects.get(id=self.kwargs.get('store_pk'))
+            store_products = StoreProduct.objects.filter(store=store)
+            print(store_products[0].product, "before")
+                
+                # Replace stringified numbers with actual objects
+            i=0
+            for store_product in store_products:
+                product = Product.objects.get(id=int(store_product.product.id))
+                print(product.product_name)
+                store_products[i].product = product
+                store_products[i].store = store
+                i += 1
+
+            # Debug print
+            # print(store_products[0].product, "details")
+            # print(store.products, "all product")
+            return store_products
+        return Store.objects.none()
+
+
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        store_pk = self.kwargs.get('store_pk')
+        store = get_object_or_404(Store, pk=store_pk)
+
+        if not user.groups.filter(name='KAdmin').exists() or user.company != store.company:
+            return Response({'error': 'You are not authorized to create products for this warehouse.'}, status=status.HTTP_403_FORBIDDEN)
+
+        product_data = request.data
+        # product_id = product_data['product_id']
+        # available_quantity = product_data['available_quantity']
+        # warehouses = Product.warehoues.all()
+        # print(warehouses)
+
+        # product = Product.objects.get(
+        #     id=product_id
+        # )
+        #
+        # StoreProduct.objects.update_or_create(store=store, product=product, available_quantity=available_quantity)
+        #
+        # # Add the product to the warehouse
+        # store.products.add(product)
+
+        products_data = product_data.get('products', [])
+        for product_data in products_data:
+            product = product_data
+            warehouse_id = product['warehouse_id']
+            available_quantity = product_data['available_quantity']
+            print(product['product_id'], "yeah")
+
+            product_obj = Product.objects.get(id=product['product_id'])
+            warehouseProduct = WarehouseProduct.objects.get(warehouse__id=warehouse_id, product=product_obj)
+            warehouseProduct.available_quantity = warehouseProduct.available_quantity - available_quantity
+            warehouseProduct.save()
+
+            StoreProduct.objects.update_or_create(
+                product=product_obj,
+                store=store,
+                available_quantity=available_quantity,
+                sold_amount=0
+            )
+
+        serializer = StoreSerializer(store, context={'request': request})
+        print(serializer.data, "yes data")
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class StoreProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StoreProduct.objects.all()
+    serializer_class = StoreProductSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        store_pk = self.kwargs.get('store_pk')
+        if user.is_authenticated:
+            if user.groups.filter(name='KAdmin').exists():
+                queryset = StoreProduct.objects.filter(store=store_pk, pk=self.kwargs['product_pk'])
+            else:
+                # For any other user, return an empty queryset
+                queryset = StoreProduct.objects.none()
+
+            # Get the specific store object based on URL parameter 'pk'
+            obj = get_object_or_404(queryset, pk=self.kwargs['product_pk'], store__pk=store_pk)
+            return obj
+        # If user is not authenticated, return 404 Not Found
+        return get_object_or_404(StoreProduct.objects.none(), pk=self.kwargs['product_pk'], store__pk=store_pk)
+    def update(self, request, *args, **kwargs):
+        print("here updating")
+        partial = kwargs.pop('partial', False)
+        product_pk = self.kwargs['product_pk']
+        store_pk = self.kwargs['store_pk']
+        store_p = StoreProduct.objects.get(store__id=store_pk, product__id=product_pk)
+        diff = request.data['available_quantity'] - store_p.available_quantity
+        if diff >= 0:
+            warehouse_p = WarehouseProduct.objects.get(product__id=product_pk)
+            warehouse_p.available_quantity -= diff
+            print(diff, "difference was")
+            warehouse_p.save()
+        id = self.request.data['id']
+        
+        # Fetch the instance to be updated
+        instance = StoreProduct.objects.get(id=id)
+        print(instance.sold_amount, "old instance")
+
+        # Get the new sold_amount from the request data
+        new_sold_amount = request.data.get('sold_amount')
+        print(new_sold_amount, "new_amount")
+
+        # Add the new sold_amount to the previous one
+        instance.sold_amount += int(new_sold_amount)
+        print(instance.sold_amount, "sold new_amount")
+        
+        # Update available_quantity if needed
+        request.data['sold_amount'] = instance.sold_amount
+        if 'available_quantity' in request.data:
+            instance.available_quantity = request.data['available_quantity']
+
+        # Save the instance directly
+        instance.save()
+
+        # Update the instance with any other fields from the request
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        
+        # Perform the update with the valid data
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)

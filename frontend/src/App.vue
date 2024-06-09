@@ -34,7 +34,7 @@
     </div>
 
       <router-view style="height: 92vh; padding: 0"/>
-    <div>
+    <div style="background-color: var(--menu-background-color)">
       <p class="copyright">© All rights reserved, Krypton inc. 2024</p>
     </div>
   </div>
