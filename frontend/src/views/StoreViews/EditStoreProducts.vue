@@ -71,6 +71,10 @@ import EditProductView from './EditProductView.vue';
 import MarkSoldProductView from './MarkSoldProductView.vue';
 import axios from 'axios';
 import store from '@/store'; // import your Vuex store
+import { Radar } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
+
+ChartJS.register(Title, Tooltip, Legend, RadialLinearScale, PointElement, LineElement, Filler);
 
 export default {
   components: {

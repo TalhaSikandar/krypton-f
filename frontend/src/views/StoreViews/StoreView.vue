@@ -55,6 +55,7 @@
 import saveStoreView from './saveStoreView.vue';
 import EditStoreView from './EditStoreView.vue';
 import EditStoreProducts from './EditStoreProducts.vue';
+import { toast } from 'bulma-toast';
 import axios from 'axios';
 import store from '@/store'; // import your Vuex store
 
@@ -156,8 +157,18 @@ export default {
         .then(response => {
           this.stores.push(response.data);
           this.closeAddStoreModal();
+          toast({
+            message: 'Store added successfully',
+            type: 'is-success',
+            duration: 5000,
+          });
         })
         .catch(error => {
+          toast({
+            message: 'Error adding store: ' + error.response.data.error || 'Unknown error',
+            type: 'is-danger',
+            duration: 5000,
+          });
           console.error('Error adding store:', error);
         });
     },
@@ -172,9 +183,19 @@ export default {
           const index = this.stores.findIndex(store => store.id === response.data.id);
           this.$set(this.stores, index, response.data);
           this.closeEditStoreModal();
+          toast({
+            message: 'Store updated successfully',
+            type: 'is-success',
+            duration: 5000,
+          });
         })
         .catch(error => {
           console.error('Error saving store:', error);
+          toast({
+            message: 'Error saving store: ' + error.response.data.error || 'Unknown error',
+            type: 'is-danger',
+            duration: 5000,
+          });
         });
     },
     previousPage() {

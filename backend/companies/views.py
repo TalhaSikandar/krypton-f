@@ -136,4 +136,15 @@ class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
             else: 
                 queryset = Company.objects.none() 
         # If user is not authenticated, 
-        return get_object_or_404(queryset, slug=self.kwargs['company_slug'])
+        return get_object_or_404(queryset, slug=self.kwargs['company_pk'])
+    def perform_destroy(self, instance):
+            user = self.request.user
+            print("Company deleting...")
+            # Check if the user is an admin of the company
+            if user.groups.filter(name='KAdmin').exists() and instance.company == user.company:
+                instance.delete()
+                c_user = CustomUser.objects.get(id=user.id)
+                c_user.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)  # Return success response if deleted
+            else:
+                return Response({'error': 'You are not authorized to delete this company.'}, status=status.HTTP_403_FORBIDDEN)

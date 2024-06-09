@@ -8,6 +8,7 @@ const store = createStore({
     username: localStorage.getItem('username') || '',
     token: localStorage.getItem('access_token') || '',
     company_name: localStorage.getItem('company_name') || '',
+    company_id: localStorage.getItem('company_id') || '',
   },
   mutations: {
     initializeAccount(state) {

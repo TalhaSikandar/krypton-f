@@ -243,7 +243,7 @@ class StoreProductList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated and user.groups.filter(name='KAdmin').exists():
+        if user.is_authenticated:
             store = Store.objects.get(id=self.kwargs.get('store_pk'))
             store_products = StoreProduct.objects.filter(store=store)
             print(store_products[0].product, "before")
@@ -271,7 +271,6 @@ class StoreProductList(generics.ListCreateAPIView):
 
         if not user.groups.filter(name='KAdmin').exists() or user.company != store.company:
             return Response({'error': 'You are not authorized to create products for this warehouse.'}, status=status.HTTP_403_FORBIDDEN)
-
         product_data = request.data
         # product_id = product_data['product_id']
         # available_quantity = product_data['available_quantity']
@@ -310,6 +309,18 @@ class StoreProductList(generics.ListCreateAPIView):
         print(serializer.data, "yes data")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class StoresProductList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = StoreProductSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and user.groups.filter(name='KAdmin').exists():
+            return StoreProduct.objects.filter(store__company=user.company)
+        return Store.objects.none()
+
+
 class StoreProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StoreProduct.objects.all()
     serializer_class = StoreProductSerializer
@@ -323,7 +334,7 @@ class StoreProductDetail(generics.RetrieveUpdateDestroyAPIView):
                 queryset = StoreProduct.objects.filter(store=store_pk, pk=self.kwargs['product_pk'])
             else:
                 # For any other user, return an empty queryset
-                queryset = StoreProduct.objects.none()
+                queryset = StoreProduct.objects.filter(store=store_pk, pk=self.kwargs['product_pk'])
 
             # Get the specific store object based on URL parameter 'pk'
             obj = get_object_or_404(queryset, pk=self.kwargs['product_pk'], store__pk=store_pk)

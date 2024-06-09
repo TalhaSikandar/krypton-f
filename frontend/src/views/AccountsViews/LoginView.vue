@@ -85,11 +85,13 @@ export default {
 
         const company_name = response.data.company_name
         localStorage.setItem("company_name", company_name)
+        localStorage.setItem("company_id", response.data.company_id)
         // this.$store.status.username = username;
 
         localStorage.setItem("access_token", token)
         axios.defaults.headers.common["Authorization"] = "access_token" + token;
         console.log(token)
+        console.log(response.data.company_id)
 
         this.successMessage = 'Logged In';
         toast({

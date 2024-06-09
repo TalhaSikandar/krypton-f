@@ -1,31 +1,87 @@
 <template>
-  <section class="about">
+  <section class="section_all bg-light" id="about">
     <div class="container">
-      <div class="about-hero">
-        <img src="../assets/about-hero-img.jpg" alt="About Us Hero Image">
-        <div class="about-hero-content">
-          <h1>Empowering Businesses, One Dashboard at a Time</h1>
-          <p>Simplify your operations and streamline your workflow with our all-in-one dashboard solution.</p>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section_title_all text-center">
+            <h3 class="font-weight-bold">
+              Empower Your Business - Management at Your Fingertips
+            </h3>
+            <p class="section_subtitle mx-auto text-muted">
+              Take control of your entire operation, from products and raw materials to [mention other management aspects].
+            </p>
+          </div>
         </div>
       </div>
-      <div class="about-content">
-        <h2>Our Story</h2>
-        <p>
-          [Insert a brief description of your company's origin story, its founding principles, or the inspiration behind your dashboard solution.]
-        </p>
-        <h2>What We Do</h2>
-        <p>
-          We provide an intuitive and powerful dashboard that helps businesses like yours manage their [list key areas your dashboard helps with, e.g., products, raw materials, inventory, orders]. Our platform simplifies complex processes, giving you a central hub to:
-        </p>
-        <ul class="features">
-          <li>[Feature 1 benefit]</li>
-          <li>[Feature 2 benefit]</li>
-          <li>[Feature 3 benefit]</li>
-        </ul>
-        <h2>Why Choose Us?</h2>
-        <p>
-          We differentiate ourselves by offering [list unique selling points, e.g., user-friendliness, scalability, robust features, integrations]. Our commitment to [mention your core values, e.g., innovation, customer satisfaction] ensures you receive a product that not only meets but exceeds your expectations.
-        </p>
+
+      <div class="row vertical_content_manage mt-5">
+        <div class="col-lg-6">
+          <div class="about_header_main mt-3">
+            <div class="about_icon_box">
+              <p class="text_custom font-weight-bold">
+                Simplify Complexity, Manage with Confidence
+              </p>
+            </div>
+            <h4 class="about_heading text-capitalize font-weight-bold mt-4">
+              Our platform puts all your business essentials in your hands.
+            </h4>
+            <p class="text-muted mt-3">
+              [Expand on how your platform provides comprehensive management features.]
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="img_about mt-3">
+            <img src="../assets/hero-img.jpg" alt="Management at Your Fingertips" class="img-fluid mx-auto d-block">
+          </div>
+        </div>
+      </div>
+    <div class="icons">
+      <div class="row mt-3">
+        <div class="col-lg-4">
+          <div class="about_content_box_all mt-3">
+            <div class="about_detail text-center">
+              <div class="about_icon">
+                <i class="fas fa-box"></i> </div>
+              <h5 class="text-dark text-capitalize mt-3 font-weight-bold">
+                Product Management
+              </h5>
+              <p class="edu_desc mt-3 mb-0 text-muted">
+                Track inventory, analyze sales trends, and optimize your product offerings.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="about_content_box_all mt-3">
+            <div class="about_detail text-center">
+              <div class="about_icon">
+                <i class="fas fa-cubes"></i> </div>
+              <h5 class="text-dark text-capitalize mt-3 font-weight-bold">
+                Raw Material Management
+              </h5>
+              <p class="edu_desc mb-0 mt-3 text-muted">
+                Monitor stock levels, streamline procurement processes, and ensure cost-effectiveness.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="about_content_box_all mt-3">
+            <div class="about_detail text-center">
+              <div class="about_icon">
+                <i class="fas fa-chart-line"></i> </div>
+              <h5 class="text-dark text-capitalize mt-3 font-weight-bold">
+                Data-Driven Insights
+              </h5>
+              <p class="edu_desc mb-0 mt-3 text-muted">
+                Gain real-time visibility and make informed decisions based on valuable data.
+              </p>
+            </div>
+          </div>
+     </div>   </div>
       </div>
     </div>
   </section>
@@ -35,62 +91,70 @@
 export default {
   name: 'AboutView',
 };
+
 </script>
-
 <style scoped>
-.about {
-  padding: 5rem 0;
-}
+  /* Paste your CSS styles from the provided HTML here */
 
-.about-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-  padding: 5rem;
-  position: relative;
-}
+  .section_all {
+    padding-top: 80px;
+    width: 100%;
+    padding-bottom: 80px;
+    min-height: 100vh;
+    display: flex;
+  }
 
-.about-hero img {
-  width: 50%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 5px;
-}
+  .section-title {
+    font-weight: 700; /* Corrected typo from 70 */
+  }
 
-.about-hero-content {
-  text-align: center;
-  color: #333;
-  z-index: 2;
-}
+  /* Add any other styles from your provided HTML here. 
+  Here are some examples of common styles you might find:  */
 
-.about-hero-content h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
+  .container {
+    display: flex;
+    width: 1170px;
+    margin: 0 auto;
+  }
 
-.about-content {
-  padding-top: 5rem;
-}
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
 
-.about-content p {
-  line-height: 1.5;
-  margin-bottom: 2rem;
-}
+  .col-lg-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
 
-.features li {
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 768px) {
-  .about-hero {
-    flex-direction: column;
+  .text-center {
     text-align: center;
   }
 
-  .about-hero img {
-    width: 100%;
-    margin-bottom: 2rem;
+  .font-weight-bold {
+    font-weight: bold;
   }
-}
+
+  .text-muted {
+    color: #868e96;
+  }
+
+  .mt-3 {
+    margin-top: 1rem;
+  }
+
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .text_custom {
+    color: #e91e63;  /* Example custom color */
+  }
+
+  /* Add more styles based on your specific HTML classes and IDs */
 </style>

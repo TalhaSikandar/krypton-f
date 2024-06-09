@@ -1,36 +1,51 @@
 <template>
-  <h2>Welcome to Settings</h2>
+  <div>
+    <h2>Welcome to Settings</h2>
+    <button class="company_delete" @click="deleteCompany()">Delete Company</button>
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import store from '@/store';
+import { mapState } from 'vuex';
+
 export default {
-  // No data or methods needed for this basic layout
+  methods: {
+    async deleteCompany() {
+      try {
+        const companyId = store.state.company_id; // Replace 'your_company_id' with the actual company ID
+        console.log("doing it", store.state.company_id);
+        if(companyId){
+          const response = await axios.delete(`dashboard/companies/${companyId}/`,{
+          headers: {
+            Authorization: `Bearer ${store.state.token}`
+          }
+          });
+          console.log('Company deleted:', response.data);
+          this.$router.push({ name: 'home' });
+        }
+        // Redirect or handle success message as needed
+      } catch (error) {
+        console.error('Error deleting company:', error.response.data);
+        // Handle error and show appropriate message to the user
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 @import '../../node_modules/bulma';
-
-.home {
-  display: flex;
-  min-height: 100vh;
-  padding: 0;
-  margin: 0;
-}
-
-/* Optional styling for menu and content areas */
-.menu {
-  background-color: #f5f5f5;
-  padding: 1rem;
-}
-
-.menu-list li {
+.company_delete {
+  background-color: red;
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
   padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.section {
-  padding: 1rem 2rem;
-}
 </style>
 

@@ -1,76 +1,112 @@
 <template>
-      <div class="section">
-         <h1 class="title">Hello,&nbsp; <strong>{{company_name}}!</strong><br>Welcome to Krypton!</h1>
-         <p class="home-dash-para">This is where you can view key metrics, reports, and other relevant information for your company.</p>
+  <div class="section">
+    <h1 class="title">Hello,&nbsp; <strong>{{ company_name }}!</strong><br>Welcome to Krypton!</h1>
+    <p class="home-dash-para">This is where you can view key metrics, reports, and other relevant information for your company.</p>
     <div class="charts-container">
-    <div class="card">
-      <Pie
-        id="my-chart-id"
-        :options="chartOptions"
-        :data="chartData"
-      />
-          </div>
-    <div class="card">
-      <Bar
-        id="my-chart-id"
-        :options="chartOptions"
-        :data="chartData"
-      />
-          </div>
-    <div class="card">
-      <Line
-        id="my-chart-id"
-        :options="chartOptions"
-        :data="chartData"
-      />
-          </div></div>
-        </div>
+      <div class="card">
+        <button @click="toggleChart" class="toggle-button">{{ showAllStores ? 'Show Top Stores' : 'Show All Stores' }}</button>
+        <Bar
+          id="line-chart"
+          :options="chartOptions"
+          :data="chartData"
+        />
+        <p class="card-title" style="color: var(--white-background-color); padding-left: 2rem;">Stores Performance</p>
+      </div>
+    </div>
+  </div>
 </template>
 
-
 <script>
-import axios from 'axios'
-import { mapState }from 'vuex';
-import { Pie , Bar, Line} from 'vue-chartjs'
-import { Chart as ChartJS, Title, PointElement, LineElement, Tooltip, ArcElement, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import axios from 'axios';
+import store from '@/store'; // import your Vuex store
+import { mapState } from 'vuex';
+import { Bar } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
-ChartJS.register(Title, PointElement, Tooltip, ArcElement, LineElement,  Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
 export default {
   computed: {
     ...mapState(['company_name']),
   },
   components: {
-    Pie,
     Bar,
-    Line
   },
-data() {
+  mounted() {
+    this.getStores();
+    document.title = 'Home | Krypton';
+  },
+  data() {
     return {
+      stores: [],
+      showAllStores: false,
       chartData: {
-        labels: [ 'January', 'February', 'March' ],
-        datasets: [ 
-          { data: [40, 20, 12] ,
-      backgroundColor: ['#0a152f', '#9d4edd', '#00D8FF', '#DD1B16'],
-          },
-        ]
+        labels: [],
+        datasets: [],
       },
       chartOptions: {
-        responsive: true
+        responsive: true,
+      },
+    };
+  },
+  methods: {
+    generateRandomColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        const randomColor = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.8)`;
+        colors.push(randomColor);
       }
-    }
-  }
+      return colors;
+    },
+    getStores() {
+      axios
+        .get('dashboard/stores/products/', {
+          headers: {
+            Authorization: `Bearer ${store.state.token}`,
+          },
+        })
+        .then(response => {
+          this.stores = response.data;
+          this.updateChartData();
+        })
+        .catch(error => {
+          console.error('Error fetching stores:', error);
+        });
+    },
+    updateChartData() {
+      const storesToDisplay = this.showAllStores ? this.stores : this.stores.slice(0, 5); // Show top 5 stores by default
+      const labels = storesToDisplay.map(store => String(store.store));
+      const data = storesToDisplay.map(store => store.sold_amount);
+      const backgroundColors = this.generateRandomColors(storesToDisplay.length);
+
+      this.chartData = {
+        labels: labels,
+        datasets: [{
+          label: 'Sold Amount',
+          data: data,
+          backgroundColor: backgroundColors,
+        }],
+      };
+    },
+    toggleChart() {
+      this.showAllStores = !this.showAllStores;
+      this.updateChartData();
+    },
+  },
 };
 </script>
 
 <style scoped>
 .card {
-  background-color: var(--white-background-color);
-  border-radius: 10px; /* Adjust the radius for rounded corners */
+  background-color: var(--menu-background-color);
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Adjust spacing between cards */
-  width: 500px; /* Adjust width of the card */
-  height: 300px; /* Adjust height of the card */
+  margin-bottom: 20px;
+  width: 500px;
+  height: 300px;
+  position: relative;
 }
+
 .home-dash-para {
   color: var(--white-background-color);
 }
@@ -78,7 +114,23 @@ data() {
 .charts-container {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap; /* Allow content to wrap */
+  flex-wrap: wrap;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: var(--button-background-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card-title {
+  color: var(--white-background-color);
+  padding-left: 2rem;
 }
 </style>
-

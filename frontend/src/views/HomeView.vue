@@ -8,10 +8,14 @@
         </p>
         <router-link :to="{name: 'companySignup'}" class="button is-primary">Get Started</router-link>
       </div>
+      <div class="images-container">
       <div class="hero-image">
         <img src="../assets/hero-img.jpg" alt="Hero Image">
       </div>
-    </div>
+      <div class="hero-image">
+        <img src="../assets/about-hero-img.jpg" alt="Hero Image">
+      </div>
+    </div></div>
   </section>
 </template>
 
@@ -67,5 +71,9 @@ export default {
   .hero-image {
     display: none;
   }
+}
+.images-container{
+  display: flex;
+  gap:2rem;
 }
 </style>
