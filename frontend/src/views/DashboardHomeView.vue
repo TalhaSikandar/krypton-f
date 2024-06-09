@@ -2,7 +2,11 @@
   <div class="dashboard-area">
     <aside class="menu">
       <ul class="side-menu">
-        <h1 class="dashboard-heading">Dashboard - <span class="comany_name" style="color: var(--primary-color)">{{ company_name }}</span></h1>
+        <div class="dashboard_start" style="display: flex; flex-direction: column; align-items:center; gap: 0rem;">
+        <h1 class="dashboard-heading">Dashboard</h1>
+        <span>-</span>
+        <h1> <span class="comany_name" style="color: var(--primary-color); margin-bottom: 4rem; font-size: 1.2rem; font-weight:bold;">{{ company_name }}</span></h1>
+        </div>
         <div class="main-routes">
           <li>
             <router-link :to="{ name: 'dashboardhome' }" exact :class="{ 'is-active': $route.name === 'dashboardhome' }">

@@ -6,8 +6,8 @@ from django.utils import timezone
 # Create your models here.
 
 class Contact(models.Model):
-    contact_no = models.CharField(max_length=11,blank=True, null=True, help_text="Enter contact no")
-    email = models.EmailField(max_length=254, help_text="Enter email")
+    contact_no = models.CharField(max_length=11, unique=False,blank=True, null=True, help_text="Enter contact no")
+    email = models.EmailField(max_length=254, unique=False,help_text="Enter email")
     website = models.URLField(unique=False, default='', max_length=200, blank=True, null=True, help_text="Enter your website url")
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)

@@ -85,7 +85,7 @@ export default {
           toast({
             message: 'Error signing up company: ' + JSON.stringify(error.response.data),
             type: 'is-danger',
-            duration: 5000,
+            duration: 500,
             dismissible: true,
             animate: { in: 'fadeIn', out: 'fadeOut' },
           });

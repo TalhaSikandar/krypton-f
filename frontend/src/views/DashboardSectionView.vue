@@ -4,13 +4,22 @@
     <p class="home-dash-para">This is where you can view key metrics, reports, and other relevant information for your company.</p>
     <div class="charts-container">
       <div class="card">
-        <button @click="toggleChart" class="toggle-button">{{ showAllStores ? 'Show Top Stores' : 'Show All Stores' }}</button>
+        <button @click="toggleShowAll('stores')" class="toggle-button">{{ showAllStores ? 'Show Top Stores' : 'Show All Stores' }}</button>
         <Bar
-          id="line-chart"
-          :options="chartOptions"
-          :data="chartData"
+          id="store-chart"
+          :options="storeChartOptions"
+          :data="storeChartData"
         />
-        <p class="card-title" style="color: var(--white-background-color); padding-left: 2rem;">Stores Performance</p>
+       <p class="card-title" style="color: var(--white-background-color); padding-left: 2rem;">Stores Performance</p>
+      </div>
+      <div class="card">
+        <button @click="toggleShowAll('warehouses')" class="toggle-button">{{ showAllWarehouses ? 'Show Top Warehouses' : 'Show All Warehouses' }}</button>
+        <Bar
+          id="warehouse-chart"
+          :options="warehouseChartOptions"
+          :data="warehouseChartData"
+        />
+       <p class="card-title" style="color: var(--white-background-color); padding-left: 2rem;">Warehouses Index</p>
       </div>
     </div>
   </div>
@@ -34,19 +43,30 @@ export default {
   },
   mounted() {
     this.getStores();
+    this.getWarehouses();
     document.title = 'Home | Krypton';
   },
   data() {
     return {
       stores: [],
+      warehouses: [],
       showAllStores: false,
-      chartData: {
+      showAllWarehouses: false,
+      storeChartData: {
         labels: [],
         datasets: [],
       },
-      chartOptions: {
+      warehouseChartData: {
+        labels: [],
+        datasets: [],
+      },
+      storeChartOptions: {
         responsive: true,
       },
+      warehouseChartOptions: {
+        responsive: true,
+      },
+      chartType: 'stores', // Default chart type to display
     };
   },
   methods: {
@@ -67,19 +87,35 @@ export default {
         })
         .then(response => {
           this.stores = response.data;
-          this.updateChartData();
+          this.updateStoreChartData();
         })
         .catch(error => {
           console.error('Error fetching stores:', error);
         });
     },
-    updateChartData() {
-      const storesToDisplay = this.showAllStores ? this.stores : this.stores.slice(0, 5); // Show top 5 stores by default
+    getWarehouses() {
+      axios
+        .get('dashboard/warehouses/products/', {
+          headers: {
+            Authorization: `Bearer ${store.state.token}`,
+          },
+        })
+        .then(response => {
+          this.warehouses = response.data;
+          console.log(this.warehouses, "warehouse");
+          this.updateWarehouseChartData();
+        })
+        .catch(error => {
+          console.error('Error fetching warehouses:', error);
+        });
+    },
+    updateStoreChartData() {
+      const storesToDisplay = this.showAllStores ? this.stores : this.stores.slice(0, 4); // Show top 4 stores or all stores
       const labels = storesToDisplay.map(store => String(store.store));
       const data = storesToDisplay.map(store => store.sold_amount);
       const backgroundColors = this.generateRandomColors(storesToDisplay.length);
 
-      this.chartData = {
+      this.storeChartData = {
         labels: labels,
         datasets: [{
           label: 'Sold Amount',
@@ -88,22 +124,42 @@ export default {
         }],
       };
     },
-    toggleChart() {
-      this.showAllStores = !this.showAllStores;
-      this.updateChartData();
+
+    updateWarehouseChartData() {
+      const warehousesToDisplay = this.showAllWarehouses ? this.warehouses : this.warehouses.slice(0, 4); // Show top 4 warehouses or all warehouses
+      const labels = warehousesToDisplay.map(warehouse => warehouse.product.product_name);
+      const data = warehousesToDisplay.map(warehouse => warehouse.available_quantity);
+      const backgroundColors = this.generateRandomColors(warehousesToDisplay.length);
+
+      this.warehouseChartData = {
+        labels: labels,
+        datasets: [{
+          label: 'Available Quantity',
+          data: data,
+          backgroundColor: backgroundColors,
+        }],
+      };
     },
+    toggleShowAll(type) {
+      if (type === 'stores') {
+        this.showAllStores = !this.showAllStores;
+        this.updateStoreChartData();
+      } else if (type === 'warehouses') {
+        this.showAllWarehouses = !this.showAllWarehouses;
+        this.updateWarehouseChartData();
+      }
+    }
   },
 };
 </script>
-
 <style scoped>
 .card {
   background-color: var(--menu-background-color);
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-bottom: 20px;
-  width: 500px;
-  height: 300px;
+  width: 45%;
+  height: 100%;
   position: relative;
 }
 

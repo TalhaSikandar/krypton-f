@@ -241,15 +241,14 @@ class AdminSignupView(CreateView):
         data['company'] = company.id
         data['role'] = CustomUser.Types.ADMIN  # Assuming CustomUser model
         form = self.form_class(data)
-        print(company)
         print(form.is_valid())
         if form.is_valid():
             user = form.save(commit=False)
             user.company = company
             user.role = CustomUser.Types.ADMIN
+            user.save()
             admin_group = Group.objects.get(name='KAdmin')
             user.groups.add(admin_group)
-            user.save()
             # Clear the session data after use (optional, not strictly necessary)
             print("User Created")
             return JsonResponse({'username': user.email}, status=status.HTTP_201_CREATED)

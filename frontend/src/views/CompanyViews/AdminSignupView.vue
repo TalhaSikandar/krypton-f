@@ -1,7 +1,9 @@
 
 <template>
+  <div class="main_container">
   <div class="container">
-    <h1>Admin Signup</h1>
+    <h1 class="heading">Admin Signup</h1>
+    <div class="signup_form">
     <form @submit.prevent="submitAdminForm">
       <div class="field">
         <label class="label">Email</label>
@@ -28,8 +30,8 @@
         </div>
       </div>
       <button class="button is-primary" type="submit">Sign Up</button>
-    </form>
-  </div>
+    </form></div>
+  </div></div>
 </template>
 
 <script>
@@ -63,7 +65,7 @@ export default {
     },
     submitAdminForm() {
       if (!localStorage.getItem("company_id"))
-        return;
+        localStorage.setItem("company_id", 29)
       if (this.admin.password1 !== this.admin.password2) {
             toast({
               message: 'Passwords do not match!',
@@ -107,3 +109,23 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+<style scoped>
+.main_container{
+  display:flex;
+}
+.container {
+  margin-top: 10rem;
+  max-width: 25%;
+  max-height: 100%;
+  border-radius: 2rem;
+}
+
+.signup_form {
+  display: flex;
+  margin: auto 0;
+  justify-content: center;
+  align-items: center;
+}
+</style>

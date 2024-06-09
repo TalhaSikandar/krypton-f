@@ -57,17 +57,25 @@ class CompanySignupView(CreateView):
         }
 
         # Create or get Contact
+        company_data['description'] = data['description']
+        company_data['industry'] = data['industry']
         contact_detail = data['contact']
+        print("error", contact_detail)
         if contact_detail:
-            contact, created = Contact.objects.get_or_create(contact_detail)
+            print("error in contact_detail")
+            contact = Contact.objects.create(**contact_detail)
+            print(contact, "contact")
             company_data['contact'] = contact.id
         else:
             return JsonResponse({'contact': ['This field is required.']}, status=400)
 
         # Create or get Address
         address_detail = data['address']
+        print("error", address_detail)
         if address_detail:
-            address, created = Address.objects.get_or_create(address_detail)
+            print("error in address_detail")
+            address= Address.objects.create(**address_detail)
+            print(address, "address")
             company_data['address'] = address.id
         else:
             return JsonResponse({'address': ['This field is required.']}, status=400)
