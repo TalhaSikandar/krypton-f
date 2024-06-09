@@ -75,14 +75,14 @@ Welcome to **Krypton**, your one-stop solution for streamlined supply chain mana
 2. Install Vue, Bulma, Bulma Toast, and Vue Chart.js.
 3. Integrate your frontend with the backend APIs.
 
-## **Deployment (Example):**
+## **Deployment:**
 - Haven't Done it yet but after finalizing everything.
 
 ## **Contributing**
 
 We do not welcome contributions to Krypton!
 
-## **Team Members (Replace with Your Team Names):**
+## **Team Members:**
 - Rao Muhammad Talha
 - Ayesha Siddiqa
 - Aizaz Amin
