@@ -7,13 +7,13 @@ Welcome to **Krypton**, your one-stop solution for streamlined supply chain mana
 ## **Tech Stack**
 
 ### **Backend:**
-- **Django** (Python) with Django REST Framework (robust APIs)
+- **Django** (Python) with Django REST Framework (robust APIs) (Aizaz + Talha)
 
 ### **Database:**
-- **SQLITE** (for initial development)
+- **SQLITE** (for initial development) (Aizaz + Talha)
 
 ### **Frontend:**
-- **Vue.js** (dynamic and user-friendly interface)
+- **Vue.js** (dynamic and user-friendly interface) (Izza + Ayesha)
 
 ### **Frontend Dependencies:**
 - **Vue** (requires Node.js)
@@ -31,28 +31,28 @@ Welcome to **Krypton**, your one-stop solution for streamlined supply chain mana
 - **Admin Signup/Login/Password Change:** Manage administrative access within a company.
 - **Manager Signup/Login/Password Change:** Manage manager access within a company, limited to store-related functions.
 
-### **Company Management (Admin):**
+### **Company Management (Admin:Izza):**
 - View, edit, and delete company information.
 - Manage all aspects of the company's supply chain.
 
-### **Store Management (Admin/Manager):**
+### **Store Management (Admin/Manager:Talha):**
 - Add, edit, and delete stores.
 - Visualize data: Sales trends, warehouse inventory, and product availability.
 
-### **Warehouse Management (Admin):**
+### **Warehouse Management (Admin:Ayesha):**
 - Add, edit, and delete warehouses.
 - Track current product levels across warehouses.
 
-### **Product Management (Admin):**
+### **Product Management (Admin:Ayesha):**
 - Add, edit, and delete products.
 - Associate products with required raw materials and quantities.
 - Track product availability in warehouses.
 
-### **Inventory Management (Admin):**
+### **Inventory Management (Admin:Talha):**
 - Add raw materials (suppliers and costs).
 - Manage and track raw material inventory.
 
-### **Supplier Management (Admin):**
+### **Supplier Management (Admin:Aizaz):**
 - Add, edit, and delete suppliers.
 - Manage supplier information and raw material costs.
 
@@ -61,9 +61,9 @@ Welcome to **Krypton**, your one-stop solution for streamlined supply chain mana
 - Maintain accurate inventory levels.
 
 ### **Additional Features:**
-- Session maintenance
+- Session maintenance (Talha)
 - Minimalistic user interface
-- Bulk company deletion (highly recommended with safeguards, consider archival instead)
+- Bulk company deletion (highly recommended with safeguards, consider archival instead) (Aizaz)
 
 ## **Getting Started (Backend Setup):**
 1. Install required dependencies using `pip install -r requirements.txt` commands.
@@ -83,10 +83,10 @@ Welcome to **Krypton**, your one-stop solution for streamlined supply chain mana
 We do not welcome contributions to Krypton!
 
 ## **Team Members:**
-- Rao Muhammad Talha
-- Ayesha Siddiqa
-- Aizaz Amin
-- Izza Arooj
+- Rao Muhammad Talha - 050
+- Ayesha Siddiqa - 106
+- Aizaz Amin - 056
+- Izza Arooj - 006
 
 ## **Disclaimer:**
 
